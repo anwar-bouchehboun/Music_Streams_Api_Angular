@@ -14,6 +14,7 @@ import {
   updateAlbum,
   updateAlbumSuccess,
   updateAlbumFailure,
+  unloadAlbums,
 } from '../actions/album.action';
 
 export const albumReducer = createReducer(
@@ -91,5 +92,10 @@ export const albumReducer = createReducer(
     ...state,
     loading: false,
     error,
+  })),
+  on(unloadAlbums, () => ({
+    albums: null,
+    loading: false,
+    error: null,
   }))
 );

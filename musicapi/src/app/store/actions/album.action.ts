@@ -60,3 +60,5 @@ export const updateAlbumFailure = createAction(
   '[Album] Update Album Failure',
   props<{ error: any }>()
 );
+
+export const unloadAlbums = createAction('[Album] Unload Albums');

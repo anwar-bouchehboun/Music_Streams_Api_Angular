@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Album } from '../models/album.model';
-import { AuthService } from './auth.service';
-import { HttpHeaders } from '@angular/common/http';
 import { tap, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 interface PaginatedResponse {
   content: Album[];
@@ -18,9 +17,9 @@ interface PaginatedResponse {
   providedIn: 'root',
 })
 export class AlbumService {
-  private baseUrl = 'http://localhost:8086/api';
+  private baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private http: HttpClient) {}
 
   getAlbums(page: number = 0, size: number = 4): Observable<PaginatedResponse> {
     console.log('Fetching albums with params:', { page, size });
@@ -30,4 +29,6 @@ export class AlbumService {
       )
       .pipe(tap((response) => console.log('Albums received:', response)));
   }
+
+
 }

@@ -1,10 +1,10 @@
 import { ChansonResponse } from './../models/chanson-response.model';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { NavbarComponent } from '../components/navbar/navbar.component';
 import { AppState } from '../store/state/app.state';
 import { Store } from '@ngrx/store';
-import { loadAlbums } from '../store/actions/album.action';
+import { loadAlbums, unloadAlbums } from '../store/actions/album.action';
 import {
   selectAlbums,
   selectLoading,
@@ -58,7 +58,7 @@ import { Router, RouterModule } from '@angular/router';
                 <div class="flex justify-between">
                   <p class="text-gray-600">{{ album.annee }}</p>
                   <button
-                    [routerLink]="['chansons', album.id]"
+                    [routerLink]="['chansons', album.titre]"
                     class="px-2 py-1 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                   >
                     Chansons
@@ -83,7 +83,7 @@ import { Router, RouterModule } from '@angular/router';
     </div>
   `,
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   albums$ = this.store.select(selectAlbums);
   loading$ = this.store.select(selectLoading).pipe(
     tap((loading) => {
@@ -124,5 +124,8 @@ export class HomeComponent implements OnInit {
   retryLoading() {
     console.log('retryLoading');
     this.loadAlbums();
+  }
+  ngOnDestroy() {
+    this.store.dispatch(unloadAlbums());
   }
 }

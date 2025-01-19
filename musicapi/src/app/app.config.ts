@@ -11,6 +11,10 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { albumReducer } from './store/reducers/album.reducer';
 import { AlbumEffects } from './store/effects/album.effects';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { ChansonsEffects } from './store/effects/chansons.effects';
+import { chansonsReducer } from './store/reducers/chansons.reducer';
+import { AudioEffects } from './store/effects/audio.effects';
+import { audioReducer } from './store/reducers/audio.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,8 +23,10 @@ export const appConfig: ApplicationConfig = {
     provideStore({
       auth: authReducer,
       album: albumReducer,
+      chansons: chansonsReducer,
+      audio: audioReducer,
     }),
-    provideEffects(AuthEffects, AlbumEffects),
+    provideEffects(AuthEffects, AlbumEffects, ChansonsEffects, AudioEffects),
     provideAnimations(),
     provideHttpClient(withInterceptors([AuthInterceptor])),
   ],

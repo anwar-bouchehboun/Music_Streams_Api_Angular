@@ -4,12 +4,13 @@ import { Observable, of, throwError } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8086/api/auth';
+  private apiUrl = environment.apiUrl + '/auth';
   private tokenExpirationTimer: any;
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -42,6 +43,10 @@ export class AuthService {
 
   private autoLogout(expirationDuration: number) {
     this.tokenExpirationTimer = setTimeout(() => {
+      console.log('🔒 Token expiré, déconnexion');
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+      localStorage.removeItem('role');
       this.clearSession();
       this.router.navigate(['/login']);
     }, expirationDuration);

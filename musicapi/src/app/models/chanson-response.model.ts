@@ -7,4 +7,5 @@ export interface ChansonResponse {
   categorie: string;
   dateAjout: string; // LocalDate devient string en format ISO
   audioFileId: string;
+  audioFile?: File;
 }
