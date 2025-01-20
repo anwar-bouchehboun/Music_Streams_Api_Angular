@@ -70,17 +70,14 @@ export class AlbumComponent implements OnInit {
 
           this.store
             .select(selectAlbumById(this.albumId))
-            .pipe(
-              filter(
-                (album): album is Album => album !== null && album !== undefined
-              )
-            )
             .subscribe((album) => {
-              this.albumForm.patchValue({
-                titre: album.titre,
-                artiste: album.artiste,
-                annee: album.annee,
-              });
+              if (album) {
+                this.albumForm.patchValue({
+                  titre: album.titre,
+                  artiste: album.artiste,
+                  annee: album.annee,
+                });
+              }
             });
         }
       }

@@ -290,13 +290,50 @@ export class AudioService {
         // Restaurer le volume
         this.store.dispatch(AudioActions.setVolume({ volume: state.volume }));
 
-        // Restaurer la dernière chanson et sa position
+        // Mettre à jour currentTrackId immédiatement
+        this.currentTrackId = state.audioId;
+        this.currentAudioId = state.audioId;
+
+        // Restaurer la dernière chanson et sa position de manière plus robuste
         if (state.audioId) {
-          this.play(state.audioId).subscribe(() => {
-            if (this.audio) {
-              this.audio.currentTime = state.currentTime;
-            }
-          });
+          const token = localStorage.getItem('token');
+          const audioUrl = this.getAudioUrl(state.audioId);
+
+          if (token) {
+            const headers = new Headers();
+            headers.append('Authorization', `Bearer ${token}`);
+
+            fetch(new Request(audioUrl, { headers }))
+              .then((response) => response.blob())
+              .then((blob) => {
+                const url = URL.createObjectURL(blob);
+                this.audio = new Audio(url);
+                this.setupAudioEvents();
+
+                // Restaurer le volume et la position
+                this.store
+                  .select((state) => state.audio.volume)
+                  .pipe(take(1))
+                  .subscribe((volume) => {
+                    if (this.audio) {
+                      this.audio.volume = volume;
+                      this.audio.currentTime = state.currentTime;
+                      // Ne pas démarrer automatiquement la lecture
+                      this.progressSubject.next({
+                        currentTime: state.currentTime,
+                        duration: this.audio.duration,
+                      });
+                    }
+                  });
+              })
+              .catch((error) => {
+                console.error(
+                  "Erreur lors de la restauration de l'audio:",
+                  error
+                );
+                this.clearSavedAudioState();
+              });
+          }
         }
       } catch (error) {
         console.error("Erreur lors de la restauration de l'état audio:", error);
