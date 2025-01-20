@@ -32,7 +32,6 @@ import {
   stagger,
   query,
 } from '@angular/animations';
-import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
 
 @Component({
   selector: 'app-chansons',
@@ -70,14 +69,14 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
     <div class="container p-6 mx-auto" @fadeInOut>
       <!-- En-tête avec image de fond -->
       <div
-        class="relative p-8 mb-8 bg-gradient-to-r from-purple-700 to-indigo-800 rounded-lg shadow-xl overflow-hidden"
+        class="overflow-hidden relative p-8 mb-8 bg-gradient-to-r from-purple-700 to-indigo-800 rounded-lg shadow-xl"
         @fadeInOut
       >
         <div class="absolute inset-0 bg-black opacity-20"></div>
         <div class="relative z-10">
           <button
             (click)="retourAccueil()"
-            class="flex items-center px-4 py-2 mb-4 text-white bg-white/20 rounded-lg backdrop-blur-sm transition-colors duration-200 hover:bg-white/30"
+            class="flex items-center px-4 py-2 mb-4 text-white rounded-lg backdrop-blur-sm transition-colors duration-200 bg-white/20 hover:bg-white/30"
           >
             <span class="mr-2 material-icons">arrow_back</span>
             Retour
@@ -85,7 +84,7 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
           <h1 class="mb-2 text-4xl font-bold text-white">
             {{ albumtitre }}
           </h1>
-          <p class="text-purple-200 text-lg">Collection de chansons</p>
+          <p class="text-lg text-purple-200">Collection de chansons</p>
         </div>
       </div>
 
@@ -101,14 +100,14 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
                 let chanson of (chansons$ | async)?.content;
                 let i = index
               "
-              class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6"
+              class="p-6 bg-white rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl"
             >
               <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-6">
                   <div
                     class="flex justify-center items-center w-12 h-12 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl shadow-lg transition-transform duration-300 transform hover:scale-110"
                   >
-                    <span class="font-medium text-white text-lg">{{
+                    <span class="text-lg font-medium text-white">{{
                       chanson.trackNumber
                     }}</span>
                   </div>
@@ -122,14 +121,14 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
                       >
                         {{ chanson.categorie }}
                       </span>
-                      <span class="text-sm text-gray-500 flex items-center">
-                        <span class="material-icons mr-1 text-sm"
+                      <span class="flex items-center text-sm text-gray-500">
+                        <span class="mr-1 text-sm material-icons"
                           >schedule</span
                         >
                         {{ chanson.description }}
                       </span>
-                      <span class="text-sm text-gray-500 flex items-center">
-                        <span class="material-icons mr-1 text-sm"
+                      <span class="flex items-center text-sm text-gray-500">
+                        <span class="mr-1 text-sm material-icons"
                           >calendar_today</span
                         >
                         {{ chanson.dateAjout | date : 'dd/MM/yyyy' }}
@@ -144,11 +143,11 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
                   <button
                     *ngIf="(currentAudioId$ | async) === chanson.audioFileId"
                     (click)="playPrevious(chanson)"
-                    class="p-2 rounded-full hover:bg-purple-100 transition-all duration-300 group"
+                    class="p-2 rounded-full transition-all duration-300 hover:bg-purple-100 group"
                     [disabled]="!hasPreviousTrack(chanson)"
                   >
                     <span
-                      class="material-icons text-gray-400 group-hover:text-purple-600"
+                      class="text-gray-400 material-icons group-hover:text-purple-600"
                     >
                       skip_previous
                     </span>
@@ -157,9 +156,9 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
                   <!-- Bouton Play/Pause -->
                   <button
                     (click)="onPlayPause(chanson.audioFileId)"
-                    class="p-3 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                    class="p-3 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full shadow-lg transition-all duration-300 transform hover:from-purple-700 hover:to-indigo-700 hover:shadow-xl hover:scale-105"
                   >
-                    <span class="material-icons text-white text-2xl">
+                    <span class="text-2xl text-white material-icons">
                       {{
                         (currentAudioId$ | async) === chanson.audioFileId &&
                         (isPlaying$ | async)
@@ -173,11 +172,11 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
                   <button
                     *ngIf="(currentAudioId$ | async) === chanson.audioFileId"
                     (click)="playNext(chanson)"
-                    class="p-2 rounded-full hover:bg-purple-100 transition-all duration-300 group"
+                    class="p-2 rounded-full transition-all duration-300 hover:bg-purple-100 group"
                     [disabled]="!hasNextTrack(chanson)"
                   >
                     <span
-                      class="material-icons text-gray-400 group-hover:text-purple-600"
+                      class="text-gray-400 material-icons group-hover:text-purple-600"
                     >
                       skip_next
                     </span>
@@ -190,10 +189,10 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
                       !(isStopped$ | async)
                     "
                     (click)="onStop()"
-                    class="p-2 rounded-full hover:bg-red-100 transition-all duration-300 group"
+                    class="p-2 rounded-full transition-all duration-300 hover:bg-red-100 group"
                   >
                     <span
-                      class="material-icons text-red-500 group-hover:text-red-600"
+                      class="text-red-500 material-icons group-hover:text-red-600"
                     >
                       stop
                     </span>
@@ -204,7 +203,7 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
               <!-- Contrôles audio si la piste est active -->
               <div
                 *ngIf="(currentAudioId$ | async) === chanson.audioFileId"
-                class="mt-6 bg-gray-50 p-4 rounded-xl"
+                class="p-4 mt-6 bg-gray-50 rounded-xl"
               >
                 <ng-container *ngIf="progress$ | async as progress">
                   <div class="space-y-2">
@@ -217,7 +216,7 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
                         class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
                       />
                       <div
-                        class="absolute -bottom-6 w-full flex justify-between text-sm text-gray-600"
+                        class="flex absolute -bottom-6 justify-between w-full text-sm text-gray-600"
                       >
                         <span>{{ progress.currentTime | duration }}</span>
                         <span>{{ progress.duration | duration }}</span>
@@ -227,12 +226,12 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
                 </ng-container>
 
                 <!-- Contrôle du volume -->
-                <div class="flex items-center space-x-4 mt-8">
+                <div class="flex items-center mt-8 space-x-4">
                   <button
                     (click)="toggleMute()"
-                    class="focus:outline-none hover:text-purple-700 transition-colors"
+                    class="transition-colors focus:outline-none hover:text-purple-700"
                   >
-                    <span class="material-icons text-purple-600">
+                    <span class="text-purple-600 material-icons">
                       {{ (volume$ | async) === 0 ? 'volume_off' : 'volume_up' }}
                     </span>
                   </button>
@@ -260,7 +259,7 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
             <div class="flex justify-between items-center">
               <div class="text-sm font-medium text-gray-600">
                 <span
-                  class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full"
+                  class="px-3 py-1 text-purple-700 bg-purple-100 rounded-full"
                 >
                   Page {{ paginatedData.number + 1 }} sur
                   {{ paginatedData.totalPages || 1 }}
@@ -282,9 +281,9 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
                       length: paginatedData.totalElements
                     })
                   "
-                  class="px-6 py-2 text-white bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg transition-all duration-300 hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transform hover:scale-105 flex items-center"
+                  class="flex items-center px-6 py-2 text-white bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-md transition-all duration-300 transform hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:scale-105"
                 >
-                  <span class="material-icons mr-2">chevron_left</span>
+                  <span class="mr-2 material-icons">chevron_left</span>
                   Précédent
                 </button>
                 <button
@@ -299,10 +298,10 @@ import { loadAudio, resumeAudio } from '../store/actions/audio.actions';
                       length: paginatedData.totalElements
                     })
                   "
-                  class="px-6 py-2 text-white bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg transition-all duration-300 hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transform hover:scale-105 flex items-center"
+                  class="flex items-center px-6 py-2 text-white bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-md transition-all duration-300 transform hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:scale-105"
                 >
                   Suivant
-                  <span class="material-icons ml-2">chevron_right</span>
+                  <span class="ml-2 material-icons">chevron_right</span>
                 </button>
               </div>
             </div>

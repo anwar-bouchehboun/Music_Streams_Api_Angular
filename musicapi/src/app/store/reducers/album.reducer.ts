@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { Album } from '../../models/album.model';
-import {initialState } from '../state/album.state';
+import { initialState } from '../state/album.state';
 import {
   loadAlbums,
   loadAlbumsSuccess,
@@ -15,6 +15,8 @@ import {
   updateAlbumSuccess,
   updateAlbumFailure,
   unloadAlbums,
+  getAlbumByIdSuccess,
+  getAlbumByIdFailure,
 } from '../actions/album.action';
 
 export const albumReducer = createReducer(
@@ -97,5 +99,17 @@ export const albumReducer = createReducer(
     albums: null,
     loading: false,
     error: null,
-  }))
+  })),
+  on(getAlbumByIdSuccess, (state, { album }) => ({
+    ...state,
+    album,
+  })),
+  on(getAlbumByIdFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+  
+
+
 );

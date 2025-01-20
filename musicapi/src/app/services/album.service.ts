@@ -1,3 +1,4 @@
+import { addAlbum, updateAlbum } from './../store/actions/album.action';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -30,5 +31,16 @@ export class AlbumService {
       .pipe(tap((response) => console.log('Albums received:', response)));
   }
 
-
+  addAlbum(album: Album): Observable<Album> {
+    return this.http.post<Album>(`${this.baseUrl}/admin/albums`, album);
+  }
+  updateAlbum(album: Album): Observable<Album> {
+    return this.http.put<Album>(`${this.baseUrl}/admin/albums/${album.id}`, album);
+  }
+  getAlbumById(id: string): Observable<Album> {
+    return this.http.get<Album>(`${this.baseUrl}/admin/albums/${id}`);
+  }
+  deleteAlbum(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/admin/albums/${id}`);
+  }
 }

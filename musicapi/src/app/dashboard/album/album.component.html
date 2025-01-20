@@ -1,0 +1,127 @@
+<div class="p-6 min-h-screen bg-gray-100">
+  <div class="mx-auto max-w-7xl">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold text-gray-900">
+        {{ isEditMode ? 'Modifier' : 'Créer' }} un Album
+      </h1>
+      <button
+        routerLink="/dashboard"
+        class="flex items-center px-4 py-2 text-gray-600 bg-white rounded-lg transition-colors hover:bg-gray-50"
+      >
+        <span class="mr-2 material-icons">arrow_back</span>
+        Retour
+      </button>
+    </div>
+
+    <div class="p-6 bg-white rounded-lg shadow-md">
+      <form
+        [formGroup]="albumForm"
+        (ngSubmit)="onSubmit()"
+        class="space-y-6"
+      >
+        <!-- Titre -->
+        <div>
+          <label for="titre" class="block text-sm font-medium text-gray-700"
+            >Titre de l'album</label
+          >
+          <input
+            type="text"
+            id="titre"
+            formControlName="titre"
+            class="block px-3 py-2 mt-1 w-full rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+            [class.border-red-500]="
+              albumForm.get('titre')?.invalid &&
+              albumForm.get('titre')?.touched
+            "
+          />
+          <p
+            *ngIf="
+              albumForm.get('titre')?.invalid &&
+              albumForm.get('titre')?.touched
+            "
+            class="mt-1 text-sm text-red-600"
+          >
+            Le titre est requis
+          </p>
+        </div>
+
+        <!-- Artiste -->
+        <div>
+          <label
+            for="artiste"
+            class="block text-sm font-medium text-gray-700"
+            >Artiste</label
+          >
+          <input
+            type="text"
+            id="artiste"
+            formControlName="artiste"
+            class="block px-3 py-2 mt-1 w-full rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+            [class.border-red-500]="
+              albumForm.get('artiste')?.invalid &&
+              albumForm.get('artiste')?.touched
+            "
+          />
+          <p
+            *ngIf="
+              albumForm.get('artiste')?.invalid &&
+              albumForm.get('artiste')?.touched
+            "
+            class="mt-1 text-sm text-red-600"
+          >
+            L'artiste est requis
+          </p>
+        </div>
+
+        <!-- Année -->
+        <div>
+          <label for="annee" class="block text-sm font-medium text-gray-700"
+            >Année de sortie</label
+          >
+          <input
+            type="number"
+            id="annee"
+            formControlName="annee"
+            class="block px-3 py-2 mt-1 w-full rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+            [class.border-red-500]="
+              albumForm.get('annee')?.invalid &&
+              albumForm.get('annee')?.touched
+            "
+          />
+          <p
+            *ngIf="
+              albumForm.get('annee')?.invalid &&
+              albumForm.get('annee')?.touched
+            "
+            class="mt-1 text-sm text-red-600"
+          >
+            L'année est requise et doit être valide >1900
+          </p>
+        </div>
+
+        <!-- Boutons -->
+        <div class="flex justify-end space-x-4">
+          <button
+            type="button"
+            routerLink="/dashboard/albums/list"
+            class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg transition-colors hover:bg-gray-200"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            [disabled]="albumForm.invalid || isSubmitting"
+            class="px-4 py-2 text-white bg-purple-600 rounded-lg transition-colors hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span class="flex items-center">
+              <span class="mr-2 material-icons">{{
+                isEditMode ? 'save' : 'add'
+              }}</span>
+              {{ isEditMode ? 'Enregistrer' : 'Créer' }}
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

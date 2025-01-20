@@ -35,14 +35,17 @@ export const addAlbumFailure = createAction(
   props<{ error: any }>()
 );
 
+// Delete Album
 export const deleteAlbum = createAction(
   '[Album] Delete Album',
   props<{ id: string }>()
 );
+
 export const deleteAlbumSuccess = createAction(
   '[Album] Delete Album Success',
   props<{ id: string }>()
 );
+
 export const deleteAlbumFailure = createAction(
   '[Album] Delete Album Failure',
   props<{ error: any }>()
@@ -61,4 +64,16 @@ export const updateAlbumFailure = createAction(
   props<{ error: any }>()
 );
 
+export const getAlbumById = createAction(
+  '[Album] Get Album By Id',
+  props<{ id: string }>()
+);
+export const getAlbumByIdSuccess = createAction(
+  '[Album] Get Album By Id Success',
+  props<{ album: Album }>()
+);
+export const getAlbumByIdFailure = createAction(
+  '[Album] Get Album By Id Failure',
+  props<{ error: any }>()
+);
 export const unloadAlbums = createAction('[Album] Unload Albums');

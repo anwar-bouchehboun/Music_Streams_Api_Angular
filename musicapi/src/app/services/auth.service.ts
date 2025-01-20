@@ -13,7 +13,27 @@ export class AuthService {
   private apiUrl = environment.apiUrl + '/auth';
   private tokenExpirationTimer: any;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {
+    // Vérifier l'expiration au démarrage
+    this.checkTokenExpiration();
+  }
+
+  private checkTokenExpiration() {
+    const token = this.getDecodedToken();
+    if (token) {
+      const expiresAt = token.exp * 1000;
+      const now = new Date().getTime();
+
+      if (now >= expiresAt) {
+        console.log('🔒 Token expiré, nettoyage automatique');
+        this.clearSession();
+        this.router.navigate(['/login']);
+      } else {
+        // Configurer le timer pour l'expiration
+        this.autoLogout(expiresAt - now);
+      }
+    }
+  }
 
   login(login: string, password: string): Observable<any> {
     return this.http
@@ -29,37 +49,41 @@ export class AuthService {
   }
 
   private setSession(authResult: any) {
-    localStorage.setItem('token', authResult.token);
-    const decodedToken = this.getDecodedToken();
-    if (decodedToken) {
-      localStorage.setItem('username', decodedToken.sub);
-      localStorage.setItem('role', decodedToken.role);
+    const token = authResult.token;
+    const decodedToken = jwtDecode<any>(token);
+    const expiresAt = decodedToken.exp * 1000;
 
-      // Configurer le timer d'expiration
-      const expiresAt = decodedToken.exp * 1000; // Conversion en millisecondes
-      this.autoLogout(expiresAt - new Date().getTime());
-    }
+    // Sauvegarder les données avec l'expiration
+    localStorage.setItem('token', token);
+    localStorage.setItem('username', decodedToken.sub);
+    localStorage.setItem('role', decodedToken.role);
+    localStorage.setItem('expiresAt', expiresAt.toString());
+
+    // Configurer le timer d'expiration
+    this.autoLogout(expiresAt - new Date().getTime());
   }
 
   private autoLogout(expirationDuration: number) {
+    if (this.tokenExpirationTimer) {
+      clearTimeout(this.tokenExpirationTimer);
+    }
+
     this.tokenExpirationTimer = setTimeout(() => {
-      console.log('🔒 Token expiré, déconnexion');
-      localStorage.removeItem('token');
-      localStorage.removeItem('username');
-      localStorage.removeItem('role');
+      console.log('🔒 Token expiré, déconnexion automatique');
       this.clearSession();
       this.router.navigate(['/login']);
-    }, expirationDuration);
+    }, Math.max(0, expirationDuration)); // Éviter les durées négatives
   }
 
   clearSession() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    localStorage.removeItem('role');
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
       this.tokenExpirationTimer = null;
     }
+
+    // Nettoyer toutes les données liées à la session
+    const keysToRemove = ['token', 'username', 'role', 'expiresAt'];
+    keysToRemove.forEach((key) => localStorage.removeItem(key));
   }
 
   logout(): Observable<any> {
@@ -86,9 +110,10 @@ export class AuthService {
   }
 
   isTokenExpired(): boolean {
-    const token = this.getDecodedToken();
-    if (!token) return true;
-    return token.exp * 1000 < new Date().getTime();
+    const expiresAt = localStorage.getItem('expiresAt');
+    if (!expiresAt) return true;
+
+    return parseInt(expiresAt, 10) < new Date().getTime();
   }
 
   getDecodedToken(): any {

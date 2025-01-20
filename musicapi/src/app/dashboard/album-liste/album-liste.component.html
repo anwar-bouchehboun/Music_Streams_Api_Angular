@@ -1,0 +1,101 @@
+<app-navbar></app-navbar>
+<div class="p-6 min-h-screen bg-gray-50">
+  <div class="mx-auto max-w-7xl">
+    <!-- En-tête avec bouton d'ajout -->
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Liste des Albums</h1>
+      <button
+        routerLink="/dashboard/albums/create"
+        class="flex items-center px-4 py-2 text-white bg-purple-600 rounded-lg transition-colors duration-200 hover:bg-purple-700"
+      >
+        <span class="mr-2 material-icons">add</span>
+        Ajouter un album
+      </button>
+    </div>
+
+    <!-- Message de chargement -->
+    <div *ngIf="loading$ | async" class="py-4 text-center">
+      <div class="text-purple-600 animate-pulse">Chargement...</div>
+    </div>
+
+    <!-- Message d'erreur -->
+    <div
+      *ngIf="error$ | async as error"
+      class="p-4 mb-4 text-red-600 bg-red-50 rounded-lg"
+    >
+      {{ error }}
+    </div>
+
+    <!-- Tableau des albums -->
+    <div class="overflow-hidden bg-white rounded-lg shadow-sm">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
+            >
+              Titre
+            </th>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
+            >
+              Artiste
+            </th>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
+            >
+              Année
+            </th>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr
+            *ngFor="let album of (albums$ | async)?.content"
+            class="transition-colors duration-150 hover:bg-gray-50"
+          >
+            <td class="px-6 py-4 whitespace-nowrap">{{ album.titre }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ album.artiste }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ album.annee }}</td>
+            <td class="px-6 py-4 text-right whitespace-nowrap">
+              <button
+                (click)="onEdit(album)"
+                class="inline-flex items-center p-1.5 text-indigo-600 transition-colors duration-200 hover:text-indigo-900"
+              >
+                <span class="text-xl material-icons">edit</span>
+              </button>
+              <button
+                (click)="onDelete(album)"
+                class="inline-flex items-center p-1.5 text-red-600 transition-colors duration-200 hover:text-red-900"
+              >
+                <span class="text-xl material-icons">delete</span>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="!(albums$ | async)?.content?.length">
+            <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+              <span class="mb-2 text-4xl material-icons">playlist_remove</span>
+              <p>Aucun album trouvé</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <mat-paginator
+        [length]="(albums$ | async)?.totalElements"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[4, 8, 12]"
+        [pageIndex]="currentPage"
+        (page)="onPageChange($event)"
+        aria-label="Sélectionner la page"
+        class="border-t"
+      >
+      </mat-paginator>
+    </div>
+  </div>
+</div>
