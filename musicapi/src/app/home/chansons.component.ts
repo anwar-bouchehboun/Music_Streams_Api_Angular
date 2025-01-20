@@ -377,9 +377,15 @@ export class ChansonsComponent implements OnInit, OnDestroy {
     );
   }
   onPageChange(event: PageEvent) {
-    this.currentPage = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.loadChansons();
+    // Arrêter la lecture audio en cours lors du changement de page
+    this.store.dispatch(AudioActions.stopAudio());
+
+    // Attendre un bref instant pour s'assurer que l'audio est arrêté
+    setTimeout(() => {
+      this.currentPage = event.pageIndex;
+      this.pageSize = event.pageSize;
+      this.loadChansons();
+    }, 100);
   }
   retryLoading() {
     console.log('retryLoading');
@@ -449,17 +455,27 @@ export class ChansonsComponent implements OnInit, OnDestroy {
   }
 
   playNext(currentChanson: ChansonResponse): void {
-    // Arrêter la chanson en cours
-    this.store.dispatch(AudioActions.stopAudio());
-
     this.chansons$.pipe(take(1)).subscribe((paginatedData) => {
       if (paginatedData?.content) {
         const currentIndex = paginatedData.content.findIndex(
           (c: ChansonResponse) => c.audioFileId === currentChanson.audioFileId
         );
-        if (currentIndex < paginatedData.content.length - 1) {
+
+        // Vérifier si nous sommes à la dernière chanson de la page actuelle
+        if (currentIndex === paginatedData.content.length - 1) {
+          // S'il y a une page suivante
+          if (paginatedData.number < paginatedData.totalPages - 1) {
+            this.store.dispatch(AudioActions.stopAudio());
+            this.onPageChange({
+              pageIndex: this.currentPage + 1,
+              pageSize: this.pageSize,
+              length: paginatedData.totalElements,
+            });
+          }
+        } else if (currentIndex < paginatedData.content.length - 1) {
+          // Lecture normale de la chanson suivante
           const nextChanson = paginatedData.content[currentIndex + 1];
-          // Attendre un court instant pour s'assurer que l'arrêt est effectif
+          this.store.dispatch(AudioActions.stopAudio());
           setTimeout(() => {
             this.onPlayPause(nextChanson.audioFileId);
           }, 100);
@@ -469,17 +485,27 @@ export class ChansonsComponent implements OnInit, OnDestroy {
   }
 
   playPrevious(currentChanson: ChansonResponse): void {
-    // Arrêter la chanson en cours
-    this.store.dispatch(AudioActions.stopAudio());
-
     this.chansons$.pipe(take(1)).subscribe((paginatedData) => {
       if (paginatedData?.content) {
         const currentIndex = paginatedData.content.findIndex(
           (c: ChansonResponse) => c.audioFileId === currentChanson.audioFileId
         );
-        if (currentIndex > 0) {
+
+        // Vérifier si nous sommes à la première chanson de la page actuelle
+        if (currentIndex === 0) {
+          // S'il y a une page précédente
+          if (paginatedData.number > 0) {
+            this.store.dispatch(AudioActions.stopAudio());
+            this.onPageChange({
+              pageIndex: this.currentPage - 1,
+              pageSize: this.pageSize,
+              length: paginatedData.totalElements,
+            });
+          }
+        } else if (currentIndex > 0) {
+          // Lecture normale de la chanson précédente
           const previousChanson = paginatedData.content[currentIndex - 1];
-          // Attendre un court instant pour s'assurer que l'arrêt est effectif
+          this.store.dispatch(AudioActions.stopAudio());
           setTimeout(() => {
             this.onPlayPause(previousChanson.audioFileId);
           }, 100);
@@ -495,7 +521,10 @@ export class ChansonsComponent implements OnInit, OnDestroy {
         const currentIndex = paginatedData.content.findIndex(
           (c: ChansonResponse) => c.audioFileId === currentChanson.audioFileId
         );
-        hasNext = currentIndex < paginatedData.content.length - 1;
+        // Vérifier s'il y a une chanson suivante sur la page actuelle ou une page suivante
+        hasNext =
+          currentIndex < paginatedData.content.length - 1 ||
+          paginatedData.number < paginatedData.totalPages - 1;
       }
     });
     return hasNext;
@@ -508,7 +537,8 @@ export class ChansonsComponent implements OnInit, OnDestroy {
         const currentIndex = paginatedData.content.findIndex(
           (c: ChansonResponse) => c.audioFileId === currentChanson.audioFileId
         );
-        hasPrevious = currentIndex > 0;
+        // Vérifier s'il y a une chanson précédente sur la page actuelle ou une page précédente
+        hasPrevious = currentIndex > 0 || paginatedData.number > 0;
       }
     });
     return hasPrevious;
