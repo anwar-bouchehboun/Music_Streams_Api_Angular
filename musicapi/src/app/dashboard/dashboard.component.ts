@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { NavbarComponent } from '../components/navbar/navbar.component';
+import { UserData } from '../resolvers/user-data.resolver';
 
 @Component({
   selector: 'app-dashboard',
@@ -95,13 +96,15 @@ export class DashboardComponent implements OnInit {
   username: string = '';
   userRole: string = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
-    const decodedToken = this.authService.getDecodedToken();
-    if (decodedToken) {
-      this.username = decodedToken.sub;
-      this.userRole = decodedToken.role;
-    }
+    this.route.data.subscribe((data) => {
+      const userData = data['userData'] as UserData;
+      this.username = userData.username;
+      this.userRole = userData.role;
+    });
   }
 }

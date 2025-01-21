@@ -36,3 +36,9 @@ export const selectAlbumById = (id: string) =>
     }
     return null;
   });
+
+  export const selectAlbum = createSelector(
+    selectAlbumState,
+    (state: AlbumState) => state.albums
+  );
+

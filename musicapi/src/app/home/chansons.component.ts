@@ -235,13 +235,15 @@ import {
                       {{ (volume$ | async) === 0 ? 'volume_off' : 'volume_up' }}
                     </span>
                   </button>
+<!--     [value]="(volume$ | async) ||1 "
+                    -->
 
                   <input
                     type="range"
                     min="0"
                     max="1"
                     step="0.1"
-                    [value]="(volume$ | async) || 1"
+                    [value]="(volume$ | async) "
                     (input)="onVolumeChange($event)"
                     class="w-32 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
                   />

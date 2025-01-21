@@ -19,6 +19,9 @@ import {
   getAlbumByIdSuccess,
   getAlbumByIdFailure,
   getAlbumById,
+  getAlbumFailure,
+  getAlbumSuccess,
+  getAlbum,
 } from '../actions/album.action';
 
 @Injectable()
@@ -82,6 +85,15 @@ export class AlbumEffects {
         map((album) => getAlbumByIdSuccess({ album })),
         tap(album => console.log(" getAlbumById album", album)),
         catchError((error) => of(getAlbumByIdFailure({ error })))
+      ))
+    )
+  );
+  getAlbum$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getAlbum),
+      mergeMap(() => this.albumService.getAlbum().pipe(
+        map((album) => getAlbumSuccess({ album })),
+        catchError((error) => of(getAlbumFailure({ error })))
       ))
     )
   );

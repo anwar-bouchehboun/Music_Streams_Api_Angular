@@ -22,6 +22,13 @@ export class AlbumService {
 
   constructor(private http: HttpClient) {}
 
+  getAlbum() {
+    console.log('getAlbum sans pagination ' );
+    return this.http.get<Album>(`${this.baseUrl}/admin/albums`)
+    .pipe(tap((response) => console.log('Albums received:', response)));
+
+  }
+
   getAlbums(page: number = 0, size: number = 4): Observable<PaginatedResponse> {
     console.log('Fetching albums with params:', { page, size });
     return this.http

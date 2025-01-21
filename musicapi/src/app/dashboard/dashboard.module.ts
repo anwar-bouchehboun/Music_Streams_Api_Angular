@@ -5,6 +5,7 @@ import { DashboardComponent } from './dashboard.component';
 import { AlbumComponent } from './album/album.component';
 import { AdminGuard } from '../guards/admin.guard';
 import { AlbumListeComponent } from './album-liste/album-liste.component';
+import { ChansonComponent } from './chanson/chanson.component';
 
 const routes: Routes = [
   {
@@ -41,11 +42,11 @@ const routes: Routes = [
         children: [
           {
             path: 'upload',
-            component: AlbumComponent, // À remplacer par le bon composant quand il sera créé
+            component: ChansonComponent, // À remplacer par le bon composant quand il sera créé
           },
           {
             path: 'list',
-            component: AlbumComponent, // À remplacer par le bon composant quand il sera créé
+            component: ChansonComponent, // À remplacer par le bon composant quand il sera créé
           },
         ],
       },

@@ -5,10 +5,15 @@ import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { LoginGuard } from './guards/login.guard';
 import { NotFoundComponent } from './components/not-found/not-found.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { UserDataResolver } from './resolvers/user-data.resolver';
 
 export const routes: Routes = [
   {
     path: 'dashboard',
+    resolve: {
+      userData: UserDataResolver,
+    },
     loadChildren: () =>
       import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
     canActivate: [AdminGuard, AuthGuard],

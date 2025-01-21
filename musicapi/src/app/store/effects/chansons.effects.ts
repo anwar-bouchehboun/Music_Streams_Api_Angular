@@ -8,6 +8,9 @@ import {
   loadChansonsSuccess,
   loadChansonsFailure,
   PaginatedChansons,
+  addChanson,
+  addChansonSuccess,
+  addChansonFailure,
 } from '../actions/chansons.action';
 
 @Injectable()
@@ -37,6 +40,20 @@ export class ChansonsEffects {
               })
             );
           })
+        )
+      )
+    )
+  );
+
+  addChanson$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addChanson),
+      tap((action) => console.log('Action addChanson:', action)),
+      mergeMap(({ chanson }) =>
+        this.chansonsService.createChanson(chanson).pipe(
+          map((response) => addChansonSuccess({ chanson: response })),
+          tap((response) => console.log('API Response:', response)),
+          catchError((error) => of(addChansonFailure({ error })))
         )
       )
     )

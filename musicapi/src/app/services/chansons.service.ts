@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpParams,HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { ChansonResponse } from '../models/chanson-response.model';
 
@@ -33,5 +34,32 @@ export class ChansonsService {
       `${this.baseUrl}/user/chansons/album`,
       { params }
     );
+  }
+  createChanson(formData: FormData): Observable<any> {
+    return this.http.post(`${this.baseUrl}/admin/chansons`, formData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Une erreur est survenue';
+
+    if (error.error instanceof ErrorEvent) {
+      // Erreur côté client
+      errorMessage = error.error.message;
+    } else {
+      // Erreur côté serveur
+      if (error.status === 400) {
+        errorMessage = error.error.message || 'Données invalides';
+      } else if (error.status === 401) {
+        errorMessage = 'Non autorisé';
+      } else if (error.status === 413) {
+        errorMessage = 'Fichier trop volumineux';
+      } else if (error.status === 415) {
+        errorMessage = 'Format de fichier non supporté';
+      }
+    }
+
+    return throwError(() => errorMessage);
   }
 }

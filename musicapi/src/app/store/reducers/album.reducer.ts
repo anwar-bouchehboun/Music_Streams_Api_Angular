@@ -17,6 +17,9 @@ import {
   unloadAlbums,
   getAlbumByIdSuccess,
   getAlbumByIdFailure,
+  getAlbum,
+  getAlbumSuccess,
+  getAlbumFailure,
 } from '../actions/album.action';
 
 export const albumReducer = createReducer(
@@ -109,7 +112,18 @@ export const albumReducer = createReducer(
     loading: false,
     error,
   })),
-  
+  on(getAlbum, (state) => ({ ...state, loading: true, error: null })),
+  on(getAlbumSuccess, (state, { album }) => ({
+    ...state,
+    album,
+    loading: false,
+    error: null,
+  })),
+  on(getAlbumFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
 
 
 );
