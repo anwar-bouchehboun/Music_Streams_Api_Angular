@@ -49,5 +49,78 @@ export const authReducer = createReducer(
     isAuthenticated: false,
     user: null,
     error: 'Session expirée',
-  }))
+  })),
+
+  on(AuthActions.creatUser, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(AuthActions.creatUserSuccess, (state, { user }) => ({
+    ...state,
+    user,
+    loading: false,
+    error: null,
+  })),
+
+  on(AuthActions.creatUserFailure, (state, { error }) => ({
+    ...state,
+    user: null,
+    loading: false,
+    error,
+  })),
+  on(AuthActions.updateUser, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(AuthActions.updateUserSuccess, (state, { user }) => ({
+    ...state,
+    user,
+    loading: false,
+    error: null,
+  })),
+
+  on(AuthActions.updateUserFailure, (state, { error }) => ({
+    ...state,
+    user: null,
+    loading: false,
+    error,
+  })),
+
+  on(AuthActions.deleteUser, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(AuthActions.deleteUserSuccess, (state, { user }) => ({
+    ...state,
+    user,
+    loading: false,
+    error: null,
+  })),
+  on(AuthActions.deleteUserFailure, (state, { error }) => ({
+    ...state,
+    user: null,
+    loading: false,
+    error,
+  })),
+  on(AuthActions.getAllusers, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(AuthActions.getAllusersSuccess, (state, { users }) => ({
+    ...state,
+    users,
+    loading: false,
+    error: null,
+  })),
+  on(AuthActions.getAllusersFailure, (state, { error }) => ({
+    ...state,
+    users: null,
+    loading: false,
+    error,
+  })),
 );

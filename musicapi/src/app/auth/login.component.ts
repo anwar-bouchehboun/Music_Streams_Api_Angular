@@ -5,22 +5,22 @@ import * as AuthActions from '../store/actions/auth.actions';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
   template: `
     <div
-      class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 p-4"
+      class="flex justify-center items-center p-4 min-h-screen bg-gradient-to-br from-blue-100 to-purple-100"
     >
       <div
-        class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition-all duration-300 ease-in-out"
+        class="p-8 w-full max-w-md bg-white rounded-2xl shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105"
       >
         <h1
-          class="text-3xl text-center mb-8 text-indigo-600 font-normal animate-fade-in"
+          class="mb-8 text-3xl font-normal text-center text-indigo-600 animate-fade-in"
         >
           Login
         </h1>
@@ -30,7 +30,7 @@ import Swal from 'sweetalert2';
             <div class="relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="absolute left-0 top-2 h-6 w-6 text-gray-400 group-hover:text-indigo-500 transition-colors"
+                class="absolute left-0 top-2 w-6 h-6 text-gray-400 transition-colors group-hover:text-indigo-500"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -46,7 +46,7 @@ import Swal from 'sweetalert2';
                 type="text"
                 formControlName="login"
                 placeholder="login"
-                class="w-full pl-8 pr-3 py-2 border-b-2 border-gray-300 group-hover:border-indigo-500 focus:border-indigo-600 focus:outline-none transition-all duration-300"
+                class="py-2 pr-3 pl-8 w-full border-b-2 border-gray-300 transition-all duration-300 group-hover:border-indigo-500 focus:border-indigo-600 focus:outline-none"
               />
             </div>
             <div
@@ -54,7 +54,7 @@ import Swal from 'sweetalert2';
                 loginForm.get('login')?.touched &&
                 loginForm.get('login')?.errors
               "
-              class="text-sm text-red-500 mt-1 animate-slide-up"
+              class="mt-1 text-sm text-red-500 animate-slide-up"
             >
               <span *ngIf="loginForm.get('login')?.errors?.['required']"
                 >Le login est requis</span
@@ -69,7 +69,7 @@ import Swal from 'sweetalert2';
             <div class="relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="absolute left-0 top-2 h-6 w-6 text-gray-400 group-hover:text-indigo-500 transition-colors"
+                class="absolute left-0 top-2 w-6 h-6 text-gray-400 transition-colors group-hover:text-indigo-500"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -85,16 +85,16 @@ import Swal from 'sweetalert2';
                 [type]="hidePassword ? 'password' : 'text'"
                 formControlName="password"
                 placeholder="Password"
-                class="w-full pl-8 pr-10 py-2 border-b-2 border-gray-300 group-hover:border-indigo-500 focus:border-indigo-600 focus:outline-none transition-all duration-300"
+                class="py-2 pr-10 pl-8 w-full border-b-2 border-gray-300 transition-all duration-300 group-hover:border-indigo-500 focus:border-indigo-600 focus:outline-none"
               />
               <button
                 type="button"
                 (click)="hidePassword = !hidePassword"
-                class="absolute right-2 top-2 text-gray-500 hover:text-indigo-600 transition-colors"
+                class="absolute top-2 right-2 text-gray-500 transition-colors hover:text-indigo-600"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
+                  class="w-6 h-6"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -128,7 +128,7 @@ import Swal from 'sweetalert2';
                 loginForm.get('password')?.touched &&
                 loginForm.get('password')?.errors
               "
-              class="text-sm text-red-500 mt-1 animate-slide-up"
+              class="mt-1 text-sm text-red-500 animate-slide-up"
             >
               <span *ngIf="loginForm.get('password')?.errors?.['required']"
                 >Le mot de passe est requis</span
@@ -143,12 +143,17 @@ import Swal from 'sweetalert2';
             <button
               type="submit"
               [disabled]="loginForm.invalid"
-              class="px-6 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95 transition-all duration-200"
+              class="px-6 py-2 text-white bg-indigo-600 rounded-lg transition-all duration-200 transform hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
             >
               Login
             </button>
           </div>
         </form>
+        <div class="mt-4 text-center">
+          <a [routerLink]="['/register']" class="text-indigo-600 hover:text-indigo-700">
+            Créer un compte
+          </a>
+        </div>
       </div>
     </div>
   `,

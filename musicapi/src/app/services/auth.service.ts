@@ -1,3 +1,4 @@
+import { updateAlbum } from './../store/actions/album.action';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
@@ -48,6 +49,21 @@ export class AuthService {
       );
   }
 
+  creatUser(user: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}`, user);
+  }
+  getAllusers(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/admin/users`);
+  }
+
+  updateUser(user: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/admin/users/${user.id}`, user);
+  }
+
+  deleteUser(user: any): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/admin/users/${user.id}`);
+  }
+
   private setSession(authResult: any) {
     const token = authResult.token;
     const decodedToken = jwtDecode<any>(token);
@@ -91,7 +107,7 @@ export class AuthService {
 
     // Nettoyer la session immédiatement
     this.clearSession();
-
+   // this.router.navigate(['/login']);
     if (!token) {
       return of({ success: true });
     }
@@ -106,7 +122,9 @@ export class AuthService {
         }
         return throwError(() => error);
       })
+
     );
+
   }
 
   isTokenExpired(): boolean {

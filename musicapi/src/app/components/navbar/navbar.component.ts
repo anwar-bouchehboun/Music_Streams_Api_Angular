@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store/state/app.state';
@@ -12,13 +12,13 @@ import * as AuthActions from '../../store/actions/auth.actions';
   imports: [CommonModule, RouterLink, RouterLinkActive],
   template: `
     <nav class="bg-gradient-to-r from-indigo-600 to-purple-600 shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
           <!-- Logo et Navigation -->
           <div class="flex">
-            <div class="flex-shrink-0 flex items-center">
+            <div class="flex flex-shrink-0 items-center">
               <img
-                class="h-10 w-auto filter drop-shadow-lg hover:drop-shadow-xl cursor-pointer transition-all duration-200 rounded-full"
+                class="w-auto h-10 rounded-full filter drop-shadow-lg transition-all duration-200 cursor-pointer hover:drop-shadow-xl"
                 src="assets/music.png"
                 alt="Logo"
               />
@@ -32,12 +32,11 @@ import * as AuthActions from '../../store/actions/auth.actions';
                 <a
                   routerLink="/home"
                   routerLinkActive="bg-white/20 text-white"
-                  class="px-4 py-2 rounded-md text-sm font-medium text-white/90 hover:bg-white/20 hover:text-white
-                          transition-all duration-200 flex items-center space-x-2"
+                  class="flex items-center px-4 py-2 space-x-2 text-sm font-medium rounded-md transition-all duration-200 text-white/90 hover:bg-white/20 hover:text-white"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
+                    class="w-5 h-5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -57,12 +56,11 @@ import * as AuthActions from '../../store/actions/auth.actions';
                   <a
                     routerLink="/dashboard"
                     routerLinkActive="bg-white/20 text-white"
-                    class="px-4 py-2 rounded-md text-sm font-medium text-white/90 hover:bg-white/20 hover:text-white
-                            transition-all duration-200 flex items-center space-x-2"
+                    class="flex items-center px-4 py-2 space-x-2 text-sm font-medium rounded-md transition-all duration-200 text-white/90 hover:bg-white/20 hover:text-white"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5"
+                      class="w-5 h-5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -85,11 +83,11 @@ import * as AuthActions from '../../store/actions/auth.actions';
             <ng-container *ngIf="isAuthenticated">
               <div class="flex items-center space-x-4">
                 <div
-                  class="flex items-center space-x-3 bg-white/10 px-4 py-2 rounded-lg"
+                  class="flex items-center px-4 py-2 space-x-3 rounded-lg bg-white/10"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 text-white/90"
+                    class="w-5 h-5 text-white/90"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -108,13 +106,11 @@ import * as AuthActions from '../../store/actions/auth.actions';
 
                 <button
                   (click)="logout()"
-                  class="flex items-center space-x-2 px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20
-                               focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-indigo-600
-                               transition-all duration-200"
+                  class="flex items-center px-4 py-2 space-x-2 text-white rounded-lg transition-all duration-200 bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-indigo-600"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
+                    class="w-5 h-5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -136,17 +132,16 @@ import * as AuthActions from '../../store/actions/auth.actions';
 
       <!-- Menu Mobile -->
       <div class="md:hidden" [class.hidden]="!isMobileMenuOpen">
-        <div class="px-2 pt-2 pb-3 space-y-1 bg-white/10 rounded-lg m-2">
+        <div class="px-2 pt-2 pb-3 m-2 space-y-1 rounded-lg bg-white/10">
           <ng-container *ngIf="isAuthenticated">
             <a
               routerLink="/home"
               routerLinkActive="bg-white/20 text-white"
-              class="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-white/90
-                      hover:bg-white/20 hover:text-white transition-all duration-200"
+              class="flex items-center px-3 py-2 space-x-2 text-base font-medium rounded-md transition-all duration-200 text-white/90 hover:bg-white/20 hover:text-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
+                class="w-5 h-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -165,12 +160,11 @@ import * as AuthActions from '../../store/actions/auth.actions';
               <a
                 routerLink="/dashboard"
                 routerLinkActive="bg-white/20 text-white"
-                class="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-white/90
-                        hover:bg-white/20 hover:text-white transition-all duration-200"
+                class="flex items-center px-3 py-2 space-x-2 text-base font-medium rounded-md transition-all duration-200 text-white/90 hover:bg-white/20 hover:text-white"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5"
+                  class="w-5 h-5"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -199,7 +193,8 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -217,6 +212,8 @@ export class NavbarComponent implements OnInit {
 
   logout() {
     this.store.dispatch(AuthActions.logout());
+    this.router.navigate(['/login']);
+
   }
 
   toggleMobileMenu() {

@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # Service pour l'application Angular
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: musicapi-frontend
+    ports:
+      - "4200:4200"  # Changé pour le port standard d'Angular en dev
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+    networks:
+      - musicapi-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4200"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+   
+
+
+
+networks:
+  musicapi-network:
+    driver: bridge

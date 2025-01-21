@@ -1,12 +1,11 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login.component';
-import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { LoginGuard } from './guards/login.guard';
 import { NotFoundComponent } from './components/not-found/not-found.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserDataResolver } from './resolvers/user-data.resolver';
+import { RegisterComponent } from './auth/register.component';
 
 export const routes: Routes = [
   {
@@ -26,6 +25,11 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+    canActivate: [LoginGuard],
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
     canActivate: [LoginGuard],
   },
   {
