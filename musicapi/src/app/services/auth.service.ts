@@ -107,7 +107,6 @@ export class AuthService {
 
     // Nettoyer la session immédiatement
     this.clearSession();
-   // this.router.navigate(['/login']);
     if (!token) {
       return of({ success: true });
     }

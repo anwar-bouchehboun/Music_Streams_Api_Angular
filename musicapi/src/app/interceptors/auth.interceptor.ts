@@ -1,7 +1,10 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { tap } from 'rxjs';
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
+  const router = inject(Router);
   const token = localStorage.getItem('token');
 
   console.log('🔑 AuthInterceptor - URL:', req.url);
@@ -14,7 +17,12 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
     return next(clonedReq).pipe(
       tap({
         next: (event) => console.log('✅ Requête réussie:', req.url),
-        error: (error) => console.error('❌ Erreur de requête:', error),
+        error: (error) => {
+          console.error('❌ Erreur de requête:', error);
+          console.log('🚫 Token invalide - Redirection vers login');
+          localStorage.removeItem('token');
+          router.navigate(['/login']);
+        },
       })
     );
   }
