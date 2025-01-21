@@ -22,9 +22,9 @@ export class AlbumService {
 
   constructor(private http: HttpClient) {}
 
-  getAlbum() {
+  getAlbum():Observable<Album[]> {
     console.log('getAlbum sans pagination ' );
-    return this.http.get<Album>(`${this.baseUrl}/admin/albums`)
+    return this.http.get<Album[]>(`${this.baseUrl}/admin/albums`)
     .pipe(tap((response) => console.log('Albums received:', response)));
 
   }
@@ -49,5 +49,8 @@ export class AlbumService {
   }
   deleteAlbum(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/admin/albums/${id}`);
+  }
+  getAllAlbums(): Observable<Album[]> {
+    return this.http.get<Album[]>(`${this.baseUrl}/admin/albums`);
   }
 }

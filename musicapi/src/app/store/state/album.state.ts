@@ -18,15 +18,5 @@ export const initialState: AlbumState = {
   error: null,
 };
 
-export interface AlbumS {
-  albums: Album[];
-  loading: boolean;
-  error: string | null;
-}
 
-export const initialAlbumState: AlbumState = {
-  albums: null,
-  loading: false,
-  error: null,
-};
 

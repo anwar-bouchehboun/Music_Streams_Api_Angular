@@ -9,10 +9,23 @@ import { selectAlbums } from '../../store/selectors/album.selectors';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store/state/app.state';
 import { getAlbum, loadAlbums } from '../../store/actions/album.action';
+import {
+  getChansonById,
+  loadChansonsListe,
+} from '../../store/actions/chansons.action';
 import { map } from 'rxjs/operators';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { addChanson } from '../../store/actions/chansons.action';
+import { addChanson, updateChanson } from '../../store/actions/chansons.action';
 import Swal from 'sweetalert2';
+import { Album } from '../../models/album.model';
+import {
+  selectAlbumListe,
+  selectLoading,
+  selectError,
+} from '../../store/selectors/albumliste.selectors';
+import { loadAlbumListe } from '../../store/actions/albumliste.action';
+import { selectChansonById } from '../../store/selectors/chansons.selectors';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chanson',
@@ -26,7 +39,13 @@ import Swal from 'sweetalert2';
   ],
 })
 export class ChansonComponent implements OnInit {
-  albums$ = this.store.select(selectAlbums);
+  albums$ = this.store.select(selectAlbumListe);
+  chanson$ = this.store.select(selectChansonById(''));
+  loading$ = this.store.select(selectLoading);
+  error$ = this.store.select(selectError);
+  chansonId:string|null=null;
+  loading = false;
+  error: string | null = null;
   currentPage = 0;
   pageSize = 10;
   totalElements = 0;
@@ -42,7 +61,8 @@ export class ChansonComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private store: Store<AppState>,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.initForm();
   }
@@ -50,11 +70,13 @@ export class ChansonComponent implements OnInit {
   private initForm() {
     this.chansonForm = this.fb.group({
       titre: ['', [Validators.required, Validators.minLength(2)]],
-      trackNumber: ['', [Validators.required, Validators.min(1)]],
+      trackNumber: [null, [Validators.required, Validators.min(1)]],
       description: ['', [Validators.required, Validators.minLength(3)]],
       categorie: ['', Validators.required],
       albumId: ['', Validators.required],
       duree: [0],
+      dateAjout: [''],
+      audioFileId: [''],
     });
   }
 
@@ -74,27 +96,46 @@ export class ChansonComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadAlbums();
-    this.albums$.subscribe((albums) => {
-      if (albums) {
-        this.totalElements = albums.totalElements;
-      }
-    });
-  }
+    // Charger d'abord la liste des albums
+    this.store.dispatch(loadAlbumListe());
 
-  private loadAlbums() {
-    this.store.dispatch(
-      loadAlbums({
-        page: this.currentPage,
-        size: this.pageSize,
-      })
-    );
+    // S'assurer que les albums sont chargés avant de traiter les paramètres
+    this.albums$.subscribe((albums) => {
+      console.log('Albums chargés:', albums); // Pour déboguer
+    });
+        // Gestion du mode édition
+        this.route.params.subscribe((params) => {
+          if (params['id']) {
+            this.isEditMode = true;
+            this.chansonId = params['id'];
+            if (this.chansonId) {
+              this.store.dispatch(getChansonById({ id: this.chansonId }));
+              this.chanson$ = this.store.select(selectChansonById(this.chansonId));
+              this.chanson$.subscribe((chanson) => {
+                if (chanson) {
+                  const albumIdString = chanson.albumId?.toString();
+                  console.log('Chanson à éditer:', chanson);
+                  this.chansonForm.patchValue({
+                    titre: chanson.titre,
+                    trackNumber: chanson.trackNumber,
+                    description: chanson.description,
+                    categorie: chanson.categorie,
+                    albumId: albumIdString,
+                    audioFileId: chanson.audioFileId,
+                  });
+                  this.audioDuration = chanson.duree;
+                }
+              });
+            }
+          }
+        });
+
+
   }
 
   onPageChange(event: PageEvent) {
     this.currentPage = event.pageIndex;
     this.pageSize = event.pageSize;
-    this.loadAlbums();
   }
 
   async onFileSelected(event: Event) {
@@ -145,40 +186,56 @@ export class ChansonComponent implements OnInit {
       const formData = new FormData();
       const formValues = this.chansonForm.value;
 
-      // Ajout des champs du formulaire
-      formData.append('titre', formValues.titre);
-      formData.append('trackNumber', formValues.trackNumber.toString());
-      formData.append('description', formValues.description);
-      formData.append('categorie', formValues.categorie);
-      formData.append('albumId', formValues.albumId);
-      formData.append('duree', this.audioDuration.toString());
+      console.log('Valeurs du formulaire avant soumission:', formValues);
 
-      // Ajout du fichier audio
+      // Ajout des champs du formulaire avec coercition explicite
+      formData.append('titre', String(formValues.titre));
+      formData.append('trackNumber', String(formValues.trackNumber));
+      formData.append('description', String(formValues.description));
+      formData.append('categorie', String(formValues.categorie));
+      formData.append('albumId', String(formValues.albumId));
+      formData.append('duree', String(this.audioDuration));
+
+      // Ajout du fichier audio si modifié
       if (this.selectedFile) {
+        console.log('Fichier audio sélectionné:', {
+          nom: this.selectedFile.name,
+          taille: this.selectedFile.size,
+          type: this.selectedFile.type,
+        });
         formData.append('audioFile', this.selectedFile, this.selectedFile.name);
       }
 
-      // Log pour vérification
-      console.log('Form Values:', formValues);
-      console.log('Selected File:', this.selectedFile);
-      console.log('Durée:', this.audioDuration);
-
       // Afficher le contenu du FormData
+      console.log('Contenu du FormData:');
       formData.forEach((value, key) => {
-        console.log(key + ':', value);
+        console.log(`${key}:`, value);
       });
 
-      // Dispatch de l'action
-      this.store.dispatch(addChanson({ chanson: formData }));
+      if (this.isEditMode && this.chansonId) {
+        console.log('Mode édition - ID de la chanson:', this.chansonId);
+        // Mise à jour d'une chanson existante
+        this.store.dispatch(
+          updateChanson({ id: this.chansonId, chanson: formData })
+        );
+        Swal.fire({
+          title: 'Chanson mise à jour avec succès',
+          icon: 'success',
+          timer: 500,
+        });
+      } else {
+        // Création d'une nouvelle chanson
+        this.store.dispatch(addChanson({ chanson: formData }));
+        Swal.fire({
+          title: 'Chanson ajoutée avec succès',
+          icon: 'success',
+          timer: 500,
+        });
+      }
 
       // Redirection après succès
       setTimeout(() => {
         this.router.navigate(['/dashboard/chansons/list']);
-        Swal.fire({
-          title: 'Chanson ajoutée avec succès',
-          icon: 'success',
-          timer: 2000,
-        });
       }, 1000);
     }
   }
@@ -227,5 +284,21 @@ export class ChansonComponent implements OnInit {
       if (control.errors['required']) return "L'album est requis";
     }
     return null;
+  }
+
+  // Ajout d'une méthode pour vérifier si le formulaire est valide pour la mise à jour
+  get isFormValidForUpdate(): boolean {
+    if (this.isEditMode) {
+      // En mode édition, le formulaire doit être valide et soit modifié, soit avoir un nouveau fichier
+      return (
+        this.chansonForm.valid &&
+        (this.chansonForm.dirty || this.selectedFile !== null) &&
+        !this.isSubmitting
+      );
+    }
+    // En mode création, le formulaire doit être valide et avoir un fichier
+    return (
+      this.chansonForm.valid && this.selectedFile !== null && !this.isSubmitting
+    );
   }
 }

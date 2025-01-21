@@ -41,4 +41,12 @@ export const selectAlbumById = (id: string) =>
     selectAlbumState,
     (state: AlbumState) => state.albums
   );
+  export const selectAlbumLoading = createSelector(
+    selectAlbumState,
+    (state: AlbumState) => state.loading
+  );
+  export const selectAlbumError = createSelector(
+    selectAlbumState,
+    (state: AlbumState) => state.error
+  );
 

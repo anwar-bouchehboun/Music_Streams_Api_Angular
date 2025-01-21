@@ -6,7 +6,7 @@
         {{ isEditMode ? "Modifier" : "Ajouter" }} une Chanson
       </h1>
       <button
-        routerLink="/dashboard"
+        routerLink="/dashboard/chansons/list"
         class="flex items-center px-4 py-2 text-gray-600 bg-white rounded-lg transition-colors hover:bg-gray-50"
       >
         <span class="mr-2 material-icons">arrow_back</span>
@@ -105,37 +105,26 @@
           <label for="albumId" class="block text-sm font-medium text-gray-700">
             Album
           </label>
+
           <select
             id="albumId"
             formControlName="albumId"
-            class="block px-3 py-2 mt-2 w-full bg-white rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500"
+            class="block px-3 py-2 mt-1 w-full rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             [class.border-red-500]="albumIdErrors"
           >
-            <option value="">Sélectionner un album</option>
-            <option
-              *ngFor="let album of (albums$ | async)?.content"
-              [value]="album.id"
-            >
-              {{ album.titre }} - {{ album.artiste }}
+            <option value="">Select an album</option>
+            <option *ngFor="let album of albums$ | async" [value]="album.id">
+              {{ album.titre }} 
             </option>
           </select>
+
           <p *ngIf="albumIdErrors" class="mt-1 text-sm text-red-600">
             {{ albumIdErrors }}
           </p>
-          <mat-paginator
-            [length]="totalElements"
-            [pageSize]="pageSize"
-            [pageSizeOptions]="[5, 10, 25]"
-            [pageIndex]="currentPage"
-            (page)="onPageChange($event)"
-            aria-label="Sélectionner la page"
-            class="mt-2"
-          >
-          </mat-paginator>
         </div>
 
         <!-- Fichier audio -->
-        <div *ngIf="!isEditMode">
+        <div>
           <label
             for="audioFile"
             class="block text-sm font-medium text-gray-700"
@@ -181,14 +170,14 @@
           </button>
           <button
             type="submit"
-            [disabled]="chansonForm.invalid || isSubmitting"
+            [disabled]="!isFormValidForUpdate"
             class="px-4 py-2 text-white bg-indigo-600 rounded-lg transition-colors hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span class="flex items-center">
               <span class="mr-2 material-icons">{{
                 isEditMode ? "save" : "add"
               }}</span>
-              {{ isEditMode ? "Enregistrer" : "Ajouter" }}
+              {{ isEditMode ? "Mettre à jour" : "Ajouter" }}
             </span>
           </button>
         </div>

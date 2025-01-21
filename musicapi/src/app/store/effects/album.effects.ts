@@ -88,13 +88,5 @@ export class AlbumEffects {
       ))
     )
   );
-  getAlbum$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getAlbum),
-      mergeMap(() => this.albumService.getAlbum().pipe(
-        map((album) => getAlbumSuccess({ album })),
-        catchError((error) => of(getAlbumFailure({ error })))
-      ))
-    )
-  );
+
 }

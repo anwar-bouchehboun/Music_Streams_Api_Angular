@@ -79,5 +79,5 @@ export const getAlbumByIdFailure = createAction(
 export const unloadAlbums = createAction('[Album] Unload Albums');
 
 export const getAlbum = createAction('[Album] Get Album');
-export const getAlbumSuccess = createAction('[Album] Get Album Success', props<{ album: Album }>());
+export const getAlbumSuccess = createAction('[Album] Get Album Success', props<{ album: Album[] }>());
 export const getAlbumFailure = createAction('[Album] Get Album Failure', props<{ error: any }>());

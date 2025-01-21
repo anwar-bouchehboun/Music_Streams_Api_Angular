@@ -1,0 +1,143 @@
+<app-navbar></app-navbar>
+<div class="p-6 min-h-screen bg-gray-50">
+  <div class="mx-auto max-w-7xl">
+    <!-- En-tête avec bouton d'ajout -->
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Liste des Chansons</h1>
+      <button
+        routerLink="/dashboard/chansons/create"
+        class="flex items-center px-4 py-2 text-white bg-purple-600 rounded-lg transition-colors duration-200 hover:bg-purple-700"
+      >
+        <span class="mr-2 material-icons">add</span>
+        Ajouter une chanson
+      </button>
+    </div>
+
+    <!-- Message de chargement -->
+    <div *ngIf="loading$ | async" class="py-4 text-center">
+      <div class="text-purple-600 animate-pulse">Chargement...</div>
+    </div>
+
+    <!-- Message d'erreur -->
+    <div
+      *ngIf="error$ | async as error"
+      class="p-4 mb-4 text-red-600 bg-red-50 rounded-lg"
+    >
+      {{ error }}
+    </div>
+
+    <!-- Tableau des chansons -->
+    <div class="overflow-hidden bg-white rounded-lg shadow-sm">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
+            >
+              Titre
+            </th>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
+            >
+              Description
+            </th>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
+            >
+              Catégorie
+            </th>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
+            >
+              Durée
+            </th>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
+            >
+              Date d'ajout
+            </th>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr
+            *ngFor="let chanson of (chansons$ | async)?.content"
+            class="transition-colors duration-150 hover:bg-gray-50"
+          >
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <span class="mr-2 text-xl text-purple-600 material-icons"
+                  >music_note</span
+                >
+                <div>
+                  <div class="font-medium text-gray-900">
+                    {{ chanson.titre }}
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    Piste {{ chanson.trackNumber }}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="overflow-hidden max-w-xs text-sm text-gray-900">
+                {{ chanson.description }}
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                class="px-3 py-1 text-sm font-medium text-purple-700 bg-purple-100 rounded-full"
+              >
+                {{ chanson.categorie }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+              {{ chanson.duree | duration }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">
+                {{ chanson.dateAjout | date : "dd/MM/yyyy" }}
+              </div>
+            </td>
+            <td class="px-6 py-4 text-right whitespace-nowrap">
+              <button
+                (click)="onEdit(chanson)"
+                class="inline-flex items-center p-1.5 text-indigo-600 transition-colors duration-200 hover:text-indigo-900"
+              >
+                <span class="text-xl material-icons">edit</span>
+              </button>
+              <button
+                (click)="onDelete(chanson)"
+                class="inline-flex items-center p-1.5 text-red-600 transition-colors duration-200 hover:text-red-900"
+              >
+                <span class="text-xl material-icons">delete</span>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="!(chansons$ | async)?.content?.length">
+            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+              <span class="mb-2 text-4xl material-icons">music_off</span>
+              <p>Aucune chanson trouvée</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <mat-paginator
+        *ngIf="(chansons$ | async)?.content?.length"
+        [length]="(chansons$ | async)?.totalElements"
+        [pageSize]="(chansons$ | async)?.size"
+        [pageIndex]="(chansons$ | async)?.number"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        (page)="onPageChange($event)"
+        class="border-t"
+      >
+      </mat-paginator>
+    </div>
+  </div>
+</div>

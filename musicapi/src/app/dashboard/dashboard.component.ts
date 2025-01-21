@@ -71,13 +71,7 @@ import { UserData } from '../resolvers/user-data.resolver';
               organisation.
             </p>
             <div class="space-y-2">
-              <button
-                routerLink="chansons/upload"
-                class="flex justify-center items-center px-4 py-2 w-full text-white bg-indigo-600 rounded-lg transition-colors hover:bg-indigo-700"
-              >
-                <span class="mr-2 material-icons">upload</span>
-                Upload Chanson
-              </button>
+        
               <button
                 routerLink="chansons/list"
                 class="flex justify-center items-center px-4 py-2 w-full text-indigo-600 bg-indigo-100 rounded-lg transition-colors hover:bg-indigo-200"

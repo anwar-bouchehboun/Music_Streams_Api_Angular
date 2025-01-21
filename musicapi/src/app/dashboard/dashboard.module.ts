@@ -6,6 +6,7 @@ import { AlbumComponent } from './album/album.component';
 import { AdminGuard } from '../guards/admin.guard';
 import { AlbumListeComponent } from './album-liste/album-liste.component';
 import { ChansonComponent } from './chanson/chanson.component';
+import { ChansonListeComponent } from './chanson-liste/chanson-liste.component';
 
 const routes: Routes = [
   {
@@ -41,12 +42,20 @@ const routes: Routes = [
         path: 'chansons',
         children: [
           {
-            path: 'upload',
+            path: 'create',
             component: ChansonComponent, // À remplacer par le bon composant quand il sera créé
           },
           {
             path: 'list',
-            component: ChansonComponent, // À remplacer par le bon composant quand il sera créé
+            component: ChansonListeComponent, // À remplacer par le bon composant quand il sera créé
+          },
+          {
+            path: 'edit/:id',
+            component: ChansonComponent,
+          },
+          {
+            path: 'delete/:id',
+            component: ChansonListeComponent,
           },
         ],
       },

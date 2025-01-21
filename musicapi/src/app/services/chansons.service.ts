@@ -20,7 +20,14 @@ export class ChansonsService {
   private baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
-
+  getChansonsListe(
+    page: number = 0,
+    size: number = 4,
+  ): Observable<PaginatedResponse> {
+    return this.http.get<PaginatedResponse>(
+      `${this.baseUrl}/admin/chansons/page?page=${page}&size=${size}`
+    );
+  }
   getChansons(
     page: number = 0,
     size: number = 4,
@@ -39,6 +46,17 @@ export class ChansonsService {
     return this.http.post(`${this.baseUrl}/admin/chansons`, formData).pipe(
       catchError(this.handleError)
     );
+  }
+  deleteChanson(id: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/admin/chansons/${id}`);
+  }
+  updateChanson(id: string, formData: FormData): Observable<any> {
+    return this.http.put(`${this.baseUrl}/admin/chansons/${id}`, formData).pipe(
+      catchError(this.handleError)
+    );
+  }
+  getChansonById(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/chansons/${id}`);
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -62,4 +80,12 @@ export class ChansonsService {
 
     return throwError(() => errorMessage);
   }
+  getAudioUrl(audioFileId: string): string {
+    return `${this.baseUrl}/user/chansons/stream/${audioFileId}`;
+  }
+
+  getAllChansons(): Observable<ChansonResponse[]> {
+    return this.http.get<ChansonResponse[]>(`${this.baseUrl}admin/chansons`);
+  }
+
 }

@@ -1,3 +1,4 @@
+import { loadChansonsListe, loadChansonsListeSuccess, loadChansonsListeFailure, deleteChansonSuccess, deleteChansonFailure, getChansonByIdFailure, getChansonByIdSuccess, getChansonById, updateChanson, updateChansonFailure, updateChansonSuccess } from './../actions/chansons.action';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, mergeMap, tap } from 'rxjs/operators';
@@ -11,7 +12,9 @@ import {
   addChanson,
   addChansonSuccess,
   addChansonFailure,
+  deleteChanson
 } from '../actions/chansons.action';
+import { ChansonResponse } from '../../models/chanson-response.model';
 
 @Injectable()
 export class ChansonsEffects {
@@ -56,6 +59,49 @@ export class ChansonsEffects {
           catchError((error) => of(addChansonFailure({ error })))
         )
       )
+    )
+  );
+  loadChansonsListe$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loadChansonsListe),
+      tap((action) => console.log('Action loadChansonsListe:', action)),
+      mergeMap(({ page, size }) =>
+        this.chansonsService.getChansonsListe(page, size).pipe(
+          map((response) => loadChansonsListeSuccess({ chansons: response })),
+          catchError((error) => of(loadChansonsListeFailure({ error })))
+        )
+      )
+    )
+  );
+  deleteChansos$=createEffect(()=>
+    this.actions$.pipe(
+      ofType(deleteChanson),
+      mergeMap(({id})=>this.chansonsService.deleteChanson(id).pipe(
+        tap(response=>console.log('API Response:',response)),
+        map(()=>deleteChansonSuccess({id})),
+        catchError((error)=>of(deleteChansonFailure({error}))
+      )
+    )
+  ))
+  );
+  getChansonById$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getChansonById),
+      mergeMap(({ id }) => this.chansonsService.getChansonById(id).pipe(
+        tap(id => console.log(" getChansonById id", id)),
+        map((chanson) => getChansonByIdSuccess({ chanson })),
+        tap(chanson => console.log(" getChansonById chanson", chanson)),
+        catchError((error) => of(getChansonByIdFailure({ error })))
+      ))
+    )
+  );
+  updateChanson$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateChanson),
+      mergeMap(({ id, chanson }) => this.chansonsService.updateChanson(id, chanson as FormData).pipe(
+        map(() => updateChansonSuccess({ chanson: chanson as ChansonResponse })),
+        catchError((error) => of(updateChansonFailure({ error })))
+      ))
     )
   );
 }

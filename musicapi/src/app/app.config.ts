@@ -15,6 +15,8 @@ import { ChansonsEffects } from './store/effects/chansons.effects';
 import { chansonsReducer } from './store/reducers/chansons.reducer';
 import { AudioEffects } from './store/effects/audio.effects';
 import { audioReducer } from './store/reducers/audio.reducer';
+import { albumListeReducer } from './store/reducers/albumliste.reducer';
+import { AlbumListeEffects } from './store/effects/albumliste.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,8 +27,9 @@ export const appConfig: ApplicationConfig = {
       album: albumReducer,
       chansons: chansonsReducer,
       audio: audioReducer,
+      albumListe: albumListeReducer,
     }),
-    provideEffects(AuthEffects, AlbumEffects, ChansonsEffects, AudioEffects),
+    provideEffects(AuthEffects, AlbumEffects, ChansonsEffects, AudioEffects, AlbumListeEffects  ),
     provideAnimations(),
     provideHttpClient(withInterceptors([AuthInterceptor])),
   ],

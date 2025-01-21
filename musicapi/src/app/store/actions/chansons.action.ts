@@ -56,7 +56,7 @@ export const deleteChansonFailure = createAction(
 
 export const updateChanson = createAction(
   '[Chansons] Update Chanson',
-  props<{ chanson: ChansonResponse }>()
+  props<{ id: string; chanson: FormData | ChansonResponse }>()
 );
 
 export const updateChansonSuccess = createAction(
@@ -70,3 +70,31 @@ export const updateChansonFailure = createAction(
 );
 
 export const unloadChansons = createAction('[Chansons] Unload Chansons');
+
+export const loadChansonsListe = createAction(
+  '[Chansons] Load Liste',
+  props<{ page?: number; size?: number }>()
+);
+export const loadChansonsListeSuccess = createAction(
+  '[Chansons] Load Chansons Liste Success',
+  props<{ chansons: PaginatedChansons }>()
+);
+export const loadChansonsListeFailure = createAction(
+  '[Chansons] Load Chansons Liste Failure',
+  props<{ error: any }>()
+);
+
+export const getChansonById = createAction(
+  '[Chansons] Get Chanson By Id',
+  props<{ id: string }>()
+);
+
+export const getChansonByIdSuccess = createAction(
+  '[Chansons] Get Chanson By Id Success',
+  props<{ chanson: ChansonResponse }>()
+);
+
+export const getChansonByIdFailure = createAction(
+  '[Chansons] Get Chanson By Id Failure',
+  props<{ error: any }>()
+);

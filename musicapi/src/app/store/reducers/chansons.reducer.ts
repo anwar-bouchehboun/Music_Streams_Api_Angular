@@ -15,6 +15,12 @@ import {
   updateChansonSuccess,
   updateChansonFailure,
   unloadChansons,
+  loadChansonsListeSuccess,
+  loadChansonsListe,
+  loadChansonsListeFailure,
+  getChansonById,
+  getChansonByIdSuccess,
+  getChansonByIdFailure,
 } from '../actions/chansons.action';
 
 export const chansonsReducer = createReducer(
@@ -98,5 +104,30 @@ export const chansonsReducer = createReducer(
     chansons: null,
     loading: false,
     error: null,
-  }))
+      })),
+  on(loadChansonsListe, (state) => ({ ...state, loading: true, error: null })),
+  on(loadChansonsListeSuccess, (state, { chansons }) => ({
+    ...state,
+    chansons,
+    loading: false,
+    error: null,
+  })),
+  on(loadChansonsListeFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+  on(getChansonById, (state, { id }) => ({
+    ...state,
+    chanson: state.chansons?.content.find((c: ChansonResponse) => c.id === id),
+  })),
+  on(getChansonByIdSuccess, (state, { chanson }) => ({
+    ...state,
+    chanson,
+  })),
+  on(getChansonByIdFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
 );
