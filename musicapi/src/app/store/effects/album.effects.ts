@@ -23,6 +23,7 @@ import {
   getAlbumSuccess,
   getAlbum,
 } from '../actions/album.action';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class AlbumEffects {
@@ -31,7 +32,7 @@ export class AlbumEffects {
   loadAlbums$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadAlbums),
-      mergeMap(({ page, size, search }) =>
+      switchMap(({ page, size, search }) =>
         this.albumService.getAlbums(page, size, search).pipe(
           map((albums) => loadAlbumsSuccess({ albums })),
           catchError((error) => {
