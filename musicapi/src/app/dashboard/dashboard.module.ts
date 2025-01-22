@@ -8,6 +8,7 @@ import { AlbumListeComponent } from './album-liste/album-liste.component';
 import { ChansonComponent } from './chanson/chanson.component';
 import { ChansonListeComponent } from './chanson-liste/chanson-liste.component';
 import { UsersComponent } from './users/users.component';
+import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
@@ -70,7 +71,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), FormsModule],
   exports: [RouterModule],
 })
 export class DashboardModule {}

@@ -1,9 +1,12 @@
 <app-navbar></app-navbar>
 <div class="p-6 min-h-screen bg-gray-50">
   <div class="mx-auto max-w-7xl">
-    <!-- En-tête avec bouton d'ajout -->
     <div class="flex justify-between items-center mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">Liste des Albums</h1>
+      <div class="flex gap-4 items-center">
+        <h1 class="text-3xl font-bold text-gray-900">Liste des Albums</h1>
+
+      </div>
+
       <button
         routerLink="/dashboard/albums/create"
         class="flex items-center px-4 py-2 text-white bg-purple-600 rounded-lg transition-colors duration-200 hover:bg-purple-700"
@@ -12,7 +15,27 @@
         Ajouter un album
       </button>
     </div>
-
+    <mat-form-field  class="w-64">
+      <mat-label>Rechercher un album</mat-label>
+      <input
+        matInput
+        [(ngModel)]="searchTerm"
+        (input)="onSearchInput($event)"
+        (keyup.enter)="onSearch()"
+        placeholder="Titre, artiste..."
+        autocomplete="off"
+      />
+      <button
+        *ngIf="searchTerm"
+        matSuffix
+        mat-icon-button
+        aria-label="Effacer"
+        (click)="onSearchClear()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+      <mat-icon matSuffix *ngIf="!searchTerm">search</mat-icon>
+    </mat-form-field>
     <!-- Message de chargement -->
     <div *ngIf="loading$ | async" class="py-4 text-center">
       <div class="text-purple-600 animate-pulse">Chargement...</div>
