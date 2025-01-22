@@ -11,7 +11,12 @@ export interface PaginatedChansons {
 
 export const loadChansons = createAction(
   '[Chansons] Load Chansons',
-  props<{ page: number; size: number; albumtitre?: string }>()
+  props<{
+    page: number;
+    size: number;
+    albumtitre?: string;
+    searchTerm?: string;
+  }>()
 );
 
 export const loadChansonsSuccess = createAction(

@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams,HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpParams,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -22,7 +26,7 @@ export class ChansonsService {
   constructor(private http: HttpClient) {}
   getChansonsListe(
     page: number = 0,
-    size: number = 4,
+    size: number = 4
   ): Observable<PaginatedResponse> {
     return this.http.get<PaginatedResponse>(
       `${this.baseUrl}/admin/chansons/page?page=${page}&size=${size}`
@@ -43,17 +47,17 @@ export class ChansonsService {
     );
   }
   createChanson(formData: FormData): Observable<any> {
-    return this.http.post(`${this.baseUrl}/admin/chansons`, formData).pipe(
-      catchError(this.handleError)
-    );
+    return this.http
+      .post(`${this.baseUrl}/admin/chansons`, formData)
+      .pipe(catchError(this.handleError));
   }
   deleteChanson(id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/admin/chansons/${id}`);
   }
   updateChanson(id: string, formData: FormData): Observable<any> {
-    return this.http.put(`${this.baseUrl}/admin/chansons/${id}`, formData).pipe(
-      catchError(this.handleError)
-    );
+    return this.http
+      .put(`${this.baseUrl}/admin/chansons/${id}`, formData)
+      .pipe(catchError(this.handleError));
   }
   getChansonById(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin/chansons/${id}`);
@@ -87,5 +91,4 @@ export class ChansonsService {
   getAllChansons(): Observable<ChansonResponse[]> {
     return this.http.get<ChansonResponse[]>(`${this.baseUrl}admin/chansons`);
   }
-
 }

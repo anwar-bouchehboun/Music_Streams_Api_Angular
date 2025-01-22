@@ -11,7 +11,7 @@ export interface PaginatedAlbums {
 
 export const loadAlbums = createAction(
   '[Album] Load Albums',
-  props<{ page: number; size: number }>()
+  props<{ page: number; size: number, search: string}>()
 );
 export const loadAlbumsSuccess = createAction(
   '[Album] Load Albums Success',

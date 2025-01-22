@@ -31,8 +31,8 @@ export class AlbumEffects {
   loadAlbums$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadAlbums),
-      mergeMap(({ page, size }) =>
-        this.albumService.getAlbums(page, size).pipe(
+      mergeMap(({ page, size, search }) =>
+        this.albumService.getAlbums(page, size, search).pipe(
           map((albums) => loadAlbumsSuccess({ albums })),
           catchError((error) => {
             console.error('Erreur lors du chargement des albums:', error);

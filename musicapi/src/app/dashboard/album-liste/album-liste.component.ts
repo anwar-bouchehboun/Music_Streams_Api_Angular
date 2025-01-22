@@ -49,7 +49,11 @@ export class AlbumListeComponent implements OnInit {
       size: this.pageSize,
     });
     this.store.dispatch(
-      AlbumActions.loadAlbums({ page: this.currentPage, size: this.pageSize })
+      AlbumActions.loadAlbums({
+        page: this.currentPage,
+        size: this.pageSize,
+       search: '',
+      })
     );
   }
 
@@ -59,19 +63,18 @@ export class AlbumListeComponent implements OnInit {
   }
 
   onDelete(album: Album): void {
-
-      Swal.fire({
-        title: 'Êtes-vous sûr ?',
-        text: `Voulez-vous vraiment supprimer l'album "${album.titre}" ?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Oui, supprimer',
-        cancelButtonText: 'Annuler',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          if (album.id) {
+    Swal.fire({
+      title: 'Êtes-vous sûr ?',
+      text: `Voulez-vous vraiment supprimer l'album "${album.titre}" ?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, supprimer',
+      cancelButtonText: 'Annuler',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (album.id) {
           this.store.dispatch(deleteAlbum({ id: album.id }));
           this.router.navigate(['/dashboard/albums/list']);
           Swal.fire({
@@ -81,7 +84,7 @@ export class AlbumListeComponent implements OnInit {
           });
         }
       }
-      });
+    });
 
     // TODO: Implémenter la logique de suppression
   }

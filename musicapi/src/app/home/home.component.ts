@@ -13,6 +13,9 @@ import {
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { delay, tap } from 'rxjs';
 import { Router, RouterModule } from '@angular/router';
+import { FormControl } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -25,6 +28,7 @@ import { Router, RouterModule } from '@angular/router';
     NgIf,
     MatPaginatorModule,
     RouterModule,
+    ReactiveFormsModule,
   ],
   template: `
     <app-navbar></app-navbar>
@@ -33,6 +37,15 @@ import { Router, RouterModule } from '@angular/router';
         <h1 class="mb-6 text-3xl font-bold text-blue-900">
           Bienvenue sur la page d'accueil
         </h1>
+
+        <div class="mb-6">
+          <input
+            [formControl]="searchControl"
+            type="text"
+            placeholder="Rechercher un album..."
+            class="px-4 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
         <ng-container *ngIf="!(error$ | async)">
           <div
@@ -84,7 +97,15 @@ import { Router, RouterModule } from '@angular/router';
   `,
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  albums$ = this.store.select(selectAlbums);
+  albums$ = this.store.select(selectAlbums).pipe(
+    tap((response) => {
+      console.log('🔍 Structure de la réponse albums:', {
+        response,
+        content: response?.content,
+        totalElements: response?.totalElements,
+      });
+    })
+  );
   loading$ = this.store.select(selectLoading).pipe(
     tap((loading) => {
       if (loading) {
@@ -98,20 +119,47 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   currentPage = 0;
   pageSize = 4;
+  searchControl = new FormControl('');
 
-  constructor(private store: Store<AppState>, private router: Router) {}
+  constructor(private store: Store<AppState>, private router: Router) {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        this.currentPage = 0;
+        const queryParams = value ? { search: value } : {};
+        this.router.navigate([], {
+          relativeTo: this.router.routerState.root,
+          queryParams,
+          queryParamsHandling: 'merge',
+        });
+        this.loadAlbums();
+      });
+  }
 
   ngOnInit() {
+    const searchParams = new URLSearchParams(window.location.search);
+    const searchParam = searchParams.get('search');
+    console.log('searchParam', searchParam);
+    if (searchParam) {
+      this.searchControl.setValue(searchParam, { emitEvent: false });
+      console.log('searchParam', searchParam);
+    }
     this.loadAlbums();
   }
 
   loadAlbums() {
+    const searchTerm = this.searchControl.value;
     console.log('📥 Demande de chargement des albums:', {
       page: this.currentPage,
       size: this.pageSize,
+      search: searchTerm,
     });
     this.store.dispatch(
-      loadAlbums({ page: this.currentPage, size: this.pageSize })
+      loadAlbums({
+        page: this.currentPage,
+        size: this.pageSize,
+        search: searchTerm?.trim() || '',
+      })
     );
   }
 

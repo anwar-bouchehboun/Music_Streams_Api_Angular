@@ -104,7 +104,7 @@ export const chansonsReducer = createReducer(
     chansons: null,
     loading: false,
     error: null,
-      })),
+  })),
   on(loadChansonsListe, (state) => ({ ...state, loading: true, error: null })),
   on(loadChansonsListeSuccess, (state, { chansons }) => ({
     ...state,
@@ -129,5 +129,5 @@ export const chansonsReducer = createReducer(
     ...state,
     loading: false,
     error,
-  })),
+  }))
 );

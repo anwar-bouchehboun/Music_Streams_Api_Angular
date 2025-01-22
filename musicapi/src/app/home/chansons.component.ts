@@ -2,7 +2,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { take } from 'rxjs/operators';
+import {
+  take,
+  filter,
+  map,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
+import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
 
 import { AppState } from '../store/state/app.state';
 import { ChansonResponse } from '../models/chanson-response.model';
@@ -32,11 +39,20 @@ import {
   stagger,
   query,
 } from '@angular/animations';
+import { FormsModule } from '@angular/forms';
+
+interface PaginatedChansons {
+  content: ChansonResponse[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}
 
 @Component({
   selector: 'app-chansons',
   standalone: true,
-  imports: [CommonModule, DurationPipe],
+  imports: [CommonModule, DurationPipe, FormsModule],
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [
@@ -67,7 +83,7 @@ import {
   ],
   template: `
     <div class="container p-6 mx-auto" @fadeInOut>
-      <!-- En-tête avec image de fond -->
+      <!-- En-tête avec image de fond et barre de recherche -->
       <div
         class="overflow-hidden relative p-8 mb-8 bg-gradient-to-r from-purple-700 to-indigo-800 rounded-lg shadow-xl"
         @fadeInOut
@@ -81,10 +97,22 @@ import {
             <span class="mr-2 material-icons">arrow_back</span>
             Retour
           </button>
-          <h1 class="mb-2 text-4xl font-bold text-white">
+          <h1 class="mb-4 text-4xl font-bold text-white">
             {{ albumtitre }}
           </h1>
-          <p class="text-lg text-purple-200">Collection de chansons</p>
+          <!-- Barre de recherche -->
+          <div class="relative max-w-md">
+            <input
+              type="text"
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="onSearch($event)"
+              placeholder="Rechercher une chanson..."
+              class="px-4 py-2 pl-10 w-full text-gray-700 rounded-lg backdrop-blur-sm bg-white/90 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+            <span class="absolute left-3 top-2.5 text-gray-400 material-icons"
+              >search</span
+            >
+          </div>
         </div>
       </div>
 
@@ -93,11 +121,11 @@ import {
           <!-- Liste des chansons -->
           <div
             class="grid gap-6 mb-8"
-            [@staggerList]="(chansons$ | async)?.content?.length"
+            [@staggerList]="(filteredChansons$ | async)?.content?.length"
           >
             <div
               *ngFor="
-                let chanson of (chansons$ | async)?.content;
+                let chanson of (filteredChansons$ | async)?.content;
                 let i = index
               "
               class="p-6 bg-white rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl"
@@ -235,7 +263,7 @@ import {
                       {{ (volume$ | async) === 0 ? 'volume_off' : 'volume_up' }}
                     </span>
                   </button>
-<!--     [value]="(volume$ | async) ||1 "
+                  <!--     [value]="(volume$ | async) ||1 "
                     -->
 
                   <input
@@ -243,7 +271,7 @@ import {
                     min="0"
                     max="1"
                     step="0.1"
-                    [value]="(volume$ | async) "
+                    [value]="volume$ | async"
                     (input)="onVolumeChange($event)"
                     class="w-32 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
                   />
@@ -254,7 +282,7 @@ import {
 
           <!-- Pagination améliorée -->
           <div
-            *ngIf="chansons$ | async as paginatedData"
+            *ngIf="filteredChansons$ | async as paginatedData"
             class="p-6 bg-white rounded-xl shadow-lg"
             @fadeInOut
           >
@@ -356,6 +384,45 @@ export class ChansonsComponent implements OnInit, OnDestroy {
   currentPage = 0;
   pageSize = 4;
   currentAudioId: string | null = null;
+  searchTerm = '';
+
+  private searchTerms = new BehaviorSubject<string>('');
+
+  filteredChansons$: Observable<PaginatedChansons | null> = combineLatest([
+    this.chansons$,
+    this.searchTerms
+      .asObservable()
+      .pipe(debounceTime(300), distinctUntilChanged()),
+  ]).pipe(
+    map(([paginatedData, search]) => {
+      if (!paginatedData || !paginatedData.content) return paginatedData;
+
+      const searchLower = search.toLowerCase().trim();
+
+      if (!searchLower) return paginatedData;
+
+      const filteredContent = paginatedData.content.filter(
+        (chanson) =>
+          chanson.titre.toLowerCase().includes(searchLower) ||
+          chanson.description.toLowerCase().includes(searchLower) ||
+          chanson.categorie.toLowerCase().includes(searchLower)
+      );
+
+      console.log('Résultats filtrés:', {
+        recherche: searchLower,
+        total: filteredContent.length,
+        résultats: filteredContent,
+      });
+
+      return {
+        ...paginatedData,
+        content: filteredContent,
+        totalElements: filteredContent.length,
+        totalPages: Math.ceil(filteredContent.length / this.pageSize),
+        number: 0,
+      };
+    })
+  );
 
   constructor(
     private route: ActivatedRoute,
@@ -368,16 +435,42 @@ export class ChansonsComponent implements OnInit, OnDestroy {
     if (this.albumtitre) {
       this.loadChansons();
     }
+
+    // Modification de la souscription pour stocker correctement les données
+    this.chansons$
+      .pipe(
+        filter((data) => !!data) // Filtrer les valeurs null/undefined
+      )
+      .subscribe((paginatedData) => {
+        if (paginatedData && paginatedData.content) {
+          this.chansons = [...paginatedData.content];
+          console.log('Chansons chargées:', this.chansons);
+        }
+      });
+
+    // S'abonner aux changements des résultats filtrés
+    this.filteredChansons$.subscribe((results) => {
+      console.log('Mise à jour des résultats:', results);
+    });
   }
+
   loadChansons() {
     this.store.dispatch(
       loadChansons({
         page: this.currentPage,
         size: this.pageSize,
         albumtitre: this.albumtitre!,
+        searchTerm: this.searchTerms.getValue(),
       })
     );
   }
+
+  onSearch(searchValue: string): void {
+    console.log('Nouvelle recherche:', searchValue);
+    this.searchTerms.next(searchValue);
+    this.currentPage = 0;
+  }
+
   onPageChange(event: PageEvent) {
     // Arrêter la lecture audio en cours lors du changement de page
     this.store.dispatch(AudioActions.stopAudio());
@@ -389,10 +482,12 @@ export class ChansonsComponent implements OnInit, OnDestroy {
       this.loadChansons();
     }, 100);
   }
+
   retryLoading() {
     console.log('retryLoading');
     this.loadChansons();
   }
+
   ngOnDestroy() {
     this.store.dispatch(unloadChansons());
     this.store.dispatch(AudioActions.stopAudio());
