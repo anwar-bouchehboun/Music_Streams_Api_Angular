@@ -1,4 +1,4 @@
-import  Swal  from 'sweetalert2';
+import Swal from 'sweetalert2';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
@@ -15,9 +15,9 @@ export class AuthEffects {
       mergeMap((action) =>
         this.authService.login(action.login, action.password).pipe(
           map((user) => AuthActions.loginSuccess({ user })),
-          catchError((error) =>
-            of(AuthActions.loginFailure({ error: error.message }))
-          )
+          catchError((error) => {
+            return of(AuthActions.loginFailure({ error }));
+          })
         )
       )
     )
@@ -48,8 +48,7 @@ export class AuthEffects {
         this.authService.logout().pipe(
           map(() => {
             return AuthActions.logoutSuccess();
-          })
-          ,
+          }),
           catchError((error) => {
             return of(AuthActions.logoutFailure({ error: error.message }));
           })
@@ -71,49 +70,60 @@ export class AuthEffects {
   creatUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.creatUser),
-      mergeMap((user) => this.authService.creatUser(user.user)
-      .pipe(
-        tap((user) => console.log(user)),
-        map((user) => AuthActions.creatUserSuccess({ user: user.user })),
-        catchError((error) => of(AuthActions.creatUserFailure({ error: error.message })))
+      mergeMap((user) =>
+        this.authService.creatUser(user.user).pipe(
+          tap((user) => console.log(user)),
+          map((user) => AuthActions.creatUserSuccess({ user: user.user })),
+          catchError((error) =>
+            of(AuthActions.creatUserFailure({ error: error.message }))
+          )
+        )
       )
-    )
     )
   );
 
   updateUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.updateUser),
-      mergeMap((user) => this.authService.updateUser(user.user)
-      .pipe(
-        map((user) => AuthActions.updateUserSuccess({ user: user.user })),
-        catchError((error) => of(AuthActions.updateUserFailure({ error: error.message })))
+      mergeMap((user) =>
+        this.authService.updateUser(user.user).pipe(
+          map((user) => AuthActions.updateUserSuccess({ user: user.user })),
+          catchError((error) =>
+            of(AuthActions.updateUserFailure({ error: error.message }))
+          )
+        )
       )
-    )
     )
   );
   deleteUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.deleteUser),
-      mergeMap((user) => this.authService.deleteUser(user.user)
-      .pipe(
-        map(() => AuthActions.deleteUserSuccess({ user: user.user })),
-        catchError((error) => of(AuthActions.deleteUserFailure({ error: error.message })))
+      mergeMap((user) =>
+        this.authService.deleteUser(user.user).pipe(
+          map(() => AuthActions.deleteUserSuccess({ user: user.user })),
+          catchError((error) =>
+            of(AuthActions.deleteUserFailure({ error: error.message }))
+          )
+        )
       )
-    )
-
     )
   );
 
-  getAllusers$ = createEffect(() =>
+  getAllUsers$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.getAllusers),
-      mergeMap(() => this.authService.getAllusers()
-      .pipe(
-        map((users) => AuthActions.getAllusersSuccess({ users })),
-        catchError((error) => of(AuthActions.getAllusersFailure({ error })))
+      mergeMap(() =>
+        this.authService.getAllusers().pipe(
+          tap((response) => console.log('Effect: réponse API reçue', response)),
+          map((response) =>
+            AuthActions.getAllusersSuccess({ users: response })
+          ),
+          catchError((error) => {
+            console.error('Effect: erreur', error);
+            return of(AuthActions.getAllusersFailure({ error: error.message }));
+          })
+        )
       )
-    )
     )
   );
 

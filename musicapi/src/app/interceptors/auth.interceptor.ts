@@ -16,7 +16,10 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
     });
     return next(clonedReq).pipe(
       tap({
-        next: (event) => console.log('✅ Requête réussie:', req.url),
+        next: (event) => {
+          console.log('✅ Requête réussie:', req.url);
+          console.log('✅ Requête réussie:', event);
+        },
         error: (error) => {
           console.error('❌ Erreur de requête:', error);
           console.log('🚫 Token invalide - Redirection vers login');

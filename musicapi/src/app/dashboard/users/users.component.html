@@ -1,0 +1,48 @@
+<app-navbar></app-navbar>
+<div class="container p-4 mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Liste des utilisateurs</h1>
+  </div>
+
+  <div *ngIf="loading$ | async" class="py-4 text-center">
+    <div class="text-purple-600">Chargement...</div>
+  </div>
+
+  <div *ngIf="error$ | async as error" class="p-4 mb-4 text-red-700 bg-red-100 rounded">
+    {{ error }}
+  </div>
+
+  <div class="overflow-x-auto bg-white rounded-lg shadow">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Login</th>
+          <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Rôles</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let user of users$ | async" class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm font-medium text-gray-900">{{ user.login }}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex flex-wrap gap-2">
+              <span *ngFor="let role of user.roles"
+                    class="px-2 py-1 text-xs font-medium rounded-full"
+                    [ngClass]="{
+                      'bg-purple-100 text-purple-800': role.rolename === 'ADMIN',
+                      'bg-blue-100 text-blue-800': role.rolename === 'USER'
+                    }">
+                {{ role.rolename }}
+              </span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="(users$ | async)?.length === 0" class="py-8 text-center text-gray-500">
+      <p>Aucun utilisateur trouvé</p>
+    </div>
+  </div>
+</div>

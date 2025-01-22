@@ -71,13 +71,35 @@ import { UserData } from '../resolvers/user-data.resolver';
               organisation.
             </p>
             <div class="space-y-2">
-        
+
               <button
                 routerLink="chansons/list"
                 class="flex justify-center items-center px-4 py-2 w-full text-indigo-600 bg-indigo-100 rounded-lg transition-colors hover:bg-indigo-200"
               >
                 <span class="mr-2 material-icons">queue_music</span>
                 Liste des Chansons
+              </button>
+            </div>
+          </div>
+          <!-- Gestion des Utilisateurs -->
+          <div class="p-6 bg-white rounded-lg shadow-md transition-shadow hover:shadow-lg">
+            <div class="flex items-center mb-4">
+              <span class="p-2 mr-4 text-blue-600 bg-blue-100 rounded-lg">
+                <span class="text-2xl material-icons">group</span>
+              </span>
+              <h2 class="text-xl font-semibold text-gray-800">Gestion des Utilisateurs</h2>
+            </div>
+            <p class="mb-4 text-gray-600">
+              Gérez vos utilisateurs :
+              liste des utilisateurs.
+            </p>
+            <div class="space-y-2">
+              <button
+                routerLink="users"
+                class="flex justify-center items-center px-4 py-2 w-full text-blue-600 bg-blue-100 rounded-lg transition-colors hover:bg-blue-200"
+              >
+                <span class="mr-2 material-icons">group</span>
+                Liste des Utilisateurs
               </button>
             </div>
           </div>

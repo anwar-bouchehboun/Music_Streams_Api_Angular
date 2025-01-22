@@ -12,6 +12,7 @@ import { environment } from '../../environments/environment';
 })
 export class AuthService {
   private apiUrl = environment.apiUrl + '/auth';
+  private apiUrlUsers = environment.apiUrl;
   private tokenExpirationTimer: any;
 
   constructor(private http: HttpClient, private router: Router) {
@@ -45,6 +46,12 @@ export class AuthService {
             this.setSession(response);
           }
           return response;
+        }),
+        catchError((error) => {
+          return throwError(() => ({
+            status: error.status,
+            message: error.error.message,
+          }));
         })
       );
   }
@@ -53,15 +60,15 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}`, user);
   }
   getAllusers(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/admin/users`);
+    return this.http.get<any>(`${this.apiUrlUsers}/admin/users`);
   }
 
   updateUser(user: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/admin/users/${user.id}`, user);
+    return this.http.put<any>(`${this.apiUrlUsers}/admin/users/${user.id}`, user);
   }
 
   deleteUser(user: any): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/admin/users/${user.id}`);
+    return this.http.delete<any>(`${this.apiUrlUsers}/admin/users/${user.id}`);
   }
 
   private setSession(authResult: any) {
@@ -121,9 +128,7 @@ export class AuthService {
         }
         return throwError(() => error);
       })
-
     );
-
   }
 
   isTokenExpired(): boolean {

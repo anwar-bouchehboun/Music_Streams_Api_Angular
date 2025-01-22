@@ -56,12 +56,15 @@ import Swal from 'sweetalert2';
               "
               class="mt-1 text-sm text-red-500 animate-slide-up"
             >
-              <span *ngIf="loginForm.get('login')?.errors?.['required']"
-                >Le login est requis</span
-              >
-              <span *ngIf="loginForm.get('login')?.errors?.['login']"
-                >Format d'email invalide</span
-              >
+              <span *ngIf="loginForm.get('login')?.errors?.['required']">
+                Le login est requis
+              </span>
+              <span *ngIf="loginForm.get('login')?.errors?.['minlength']">
+                Le login doit contenir au moins 3 caractères
+              </span>
+              <span *ngIf="loginForm.get('login')?.errors?.['loginNotExist']">
+                Le login n'existe pas
+              </span>
             </div>
           </div>
 
@@ -150,7 +153,10 @@ import Swal from 'sweetalert2';
           </div>
         </form>
         <div class="mt-4 text-center">
-          <a [routerLink]="['/register']" class="text-indigo-600 hover:text-indigo-700">
+          <a
+            [routerLink]="['/register']"
+            class="text-indigo-600 hover:text-indigo-700"
+          >
             Créer un compte
           </a>
         </div>
@@ -192,22 +198,62 @@ import Swal from 'sweetalert2';
 export class LoginComponent {
   loginForm: FormGroup;
   hidePassword = true;
+  loginError: string | null = null;
 
-  constructor(
-    private store: Store<AppState>,
-    private fb: FormBuilder,
-  ) {
+  constructor(private store: Store<AppState>, private fb: FormBuilder) {
     this.loginForm = this.fb.group({
       login: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
-  }
 
+    this.store
+      .select((state) => state.auth.error)
+      .subscribe((error: any) => {
+        if (error) {
+          if (error.status === 401) {
+            console.log('error', error.message);
+
+            if (error.message === "Le login n'existe pas") {
+              this.loginForm.get('login')?.setErrors({ loginNotExist: true });
+              Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: "Le login n'existe pas",
+              });
+            } else if (error.message === 'Mot de passe incorrect') {
+              this.loginForm
+                .get('password')
+                ?.setErrors({ incorrectPassword: true });
+              Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Mot de passe incorrect',
+              });
+            }
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Erreur',
+              text: 'Mot de passe incorrect',
+            });
+          }
+        }
+      });
+  }
 
   onLogin() {
     if (this.loginForm.valid) {
       const { login, password } = this.loginForm.value;
-      this.store.dispatch(AuthActions.login({ login, password }));
+      // Nettoyer les espaces avant et après
+      const cleanLogin = login.trim();
+      const cleanPassword = password.trim();
+
+      this.store.dispatch(
+        AuthActions.login({
+          login: cleanLogin,
+          password: cleanPassword,
+        })
+      );
     }
   }
 }

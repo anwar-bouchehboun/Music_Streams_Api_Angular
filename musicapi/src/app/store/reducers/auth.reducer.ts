@@ -2,8 +2,6 @@ import { createReducer, on } from '@ngrx/store';
 import * as AuthActions from '../actions/auth.actions';
 import { initialAuthState } from '../state/auth.state';
 
-
-
 export const authReducer = createReducer(
   initialAuthState,
 
@@ -111,16 +109,19 @@ export const authReducer = createReducer(
     loading: true,
     error: null,
   })),
-  on(AuthActions.getAllusersSuccess, (state, { users }) => ({
-    ...state,
-    users,
-    loading: false,
-    error: null,
-  })),
+  on(AuthActions.getAllusersSuccess, (state, { users }) => {
+    console.log('Reducer: users reçus', users);
+    return {
+      ...state,
+      users,
+      loading: false,
+      error: null,
+    };
+  }),
   on(AuthActions.getAllusersFailure, (state, { error }) => ({
     ...state,
-    users: null,
+    user: null,
     loading: false,
     error,
-  })),
+  }))
 );

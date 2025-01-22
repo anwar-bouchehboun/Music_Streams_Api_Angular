@@ -7,6 +7,7 @@ import { AdminGuard } from '../guards/admin.guard';
 import { AlbumListeComponent } from './album-liste/album-liste.component';
 import { ChansonComponent } from './chanson/chanson.component';
 import { ChansonListeComponent } from './chanson-liste/chanson-liste.component';
+import { UsersComponent } from './users/users.component';
 
 const routes: Routes = [
   {
@@ -59,6 +60,10 @@ const routes: Routes = [
           },
         ],
       },
+      {
+        path: 'users',
+        component: UsersComponent,
+      },  
     ],
   },
 ];

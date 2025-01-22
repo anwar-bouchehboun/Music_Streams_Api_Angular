@@ -113,14 +113,11 @@
             [class.border-red-500]="albumIdErrors"
           >
             <option value="">Select an album</option>
+
             <option *ngFor="let album of albums$ | async" [value]="album.id">
-              {{ album.titre }} 
+              {{ album.titre }}
             </option>
           </select>
-
-          <p *ngIf="albumIdErrors" class="mt-1 text-sm text-red-600">
-            {{ albumIdErrors }}
-          </p>
         </div>
 
         <!-- Fichier audio -->

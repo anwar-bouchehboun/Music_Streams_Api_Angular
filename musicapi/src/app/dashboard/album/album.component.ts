@@ -78,6 +78,7 @@ export class AlbumComponent implements OnInit {
                   annee: album.annee,
                 });
               }
+              console.log('Album à éditer:', album);
             });
         }
       }

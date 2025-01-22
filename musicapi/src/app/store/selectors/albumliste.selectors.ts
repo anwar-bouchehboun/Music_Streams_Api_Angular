@@ -1,6 +1,5 @@
-import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { createSelector } from '@ngrx/store';
 import { Album } from '../../models/album.model';
-import { AlbumListeState } from '../state/albumliste.state';
 import { AppState } from '../state/app.state';
 
 // Définir l'interface de l'état
@@ -11,19 +10,21 @@ export interface AlbumState {
 }
 
 // Créer le sélecteur de feature
-export const selectAlbumFeature = createFeatureSelector<AlbumListeState>('albumListe');
+//export const selectAlbumFeature = createFeatureSelector<AlbumListeState>('albumListe');
+export const selectAlbumState = (state: AppState) => state.albumListe;
+
 
 // Créer le sélecteur pour la liste des albums
 export const selectAlbumListe = createSelector(
-  selectAlbumFeature,
+  selectAlbumState,
   (state) => state?.albums || []
 );
 export const selectLoading = createSelector(
-  selectAlbumFeature,
+  selectAlbumState,
   (state) => state?.loading || false
 );
 export const selectError = createSelector(
-  selectAlbumFeature,
+  selectAlbumState,
   (state) => state?.error || null
 );
 

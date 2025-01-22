@@ -30,5 +30,5 @@ export const selectCreatUserLoading = createSelector(
 
 export const selectAllUsers = createSelector(
   selectAuthState,
-  (state) => state.user
+  (state) => state.users
 );

@@ -67,7 +67,7 @@ export const deleteUserFailure = createAction(
 export const getAllusers = createAction('[Auth] Get All Users');
 export const getAllusersSuccess = createAction(
   '[Auth] Get All Users Success',
-  props<{ users: any }>()
+  props<{ users: any[] }>()
 );
 export const getAllusersFailure = createAction(
   '[Auth] Get All Users Failure',

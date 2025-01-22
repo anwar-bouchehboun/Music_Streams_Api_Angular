@@ -1,23 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ChansonResponse } from '../../models/chanson-response.model';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { selectAlbums } from '../../store/selectors/album.selectors';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store/state/app.state';
-import { getAlbum, loadAlbums } from '../../store/actions/album.action';
 import {
   getChansonById,
   loadChansonsListe,
 } from '../../store/actions/chansons.action';
-import { map } from 'rxjs/operators';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { addChanson, updateChanson } from '../../store/actions/chansons.action';
 import Swal from 'sweetalert2';
-import { Album } from '../../models/album.model';
 import {
   selectAlbumListe,
   selectLoading,
@@ -25,7 +20,6 @@ import {
 } from '../../store/selectors/albumliste.selectors';
 import { loadAlbumListe } from '../../store/actions/albumliste.action';
 import { selectChansonById } from '../../store/selectors/chansons.selectors';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chanson',
@@ -43,7 +37,7 @@ export class ChansonComponent implements OnInit {
   chanson$ = this.store.select(selectChansonById(''));
   loading$ = this.store.select(selectLoading);
   error$ = this.store.select(selectError);
-  chansonId:string|null=null;
+  chansonId: string | null = null;
   loading = false;
   error: string | null = null;
   currentPage = 0;
@@ -103,34 +97,39 @@ export class ChansonComponent implements OnInit {
     this.albums$.subscribe((albums) => {
       console.log('Albums chargés:', albums); // Pour déboguer
     });
-        // Gestion du mode édition
-        this.route.params.subscribe((params) => {
-          if (params['id']) {
-            this.isEditMode = true;
-            this.chansonId = params['id'];
-            if (this.chansonId) {
-              this.store.dispatch(getChansonById({ id: this.chansonId }));
-              this.chanson$ = this.store.select(selectChansonById(this.chansonId));
-              this.chanson$.subscribe((chanson) => {
-                if (chanson) {
-                  const albumIdString = chanson.albumId?.toString();
-                  console.log('Chanson à éditer:', chanson);
-                  this.chansonForm.patchValue({
-                    titre: chanson.titre,
-                    trackNumber: chanson.trackNumber,
-                    description: chanson.description,
-                    categorie: chanson.categorie,
-                    albumId: albumIdString,
-                    audioFileId: chanson.audioFileId,
-                  });
-                  this.audioDuration = chanson.duree;
-                }
+    // Gestion du mode édition
+    this.route.params.subscribe((params) => {
+      if (params['id']) {
+        console.log('ID détecté:', params['id']);
+        this.isEditMode = true;
+        this.chansonId = params['id'];
+        if (this.chansonId) {
+          console.log('Mode édition activé');
+          this.store.dispatch(getChansonById({ id: this.chansonId }));
+          this.chanson$ = this.store.select(selectChansonById(this.chansonId));
+          this.chanson$.subscribe((chanson) => {
+            if (chanson) {
+              const albumIdString = chanson.albumId?.toString();
+              console.log('Chanson à éditer:', chanson);
+              this.chansonForm.patchValue({
+                titre: chanson.titre,
+                trackNumber: chanson.trackNumber,
+                description: chanson.description,
+                categorie: chanson.categorie,
+                albumId: albumIdString,
+                audioFileId: chanson.audioFileId,
               });
+              this.audioDuration = chanson.duree;
             }
-          }
-        });
+          });
+        }
+      }
+    });
+    console.log(this.isEditMode);
 
-
+    if (this.isEditMode) {
+      console.log('Edit mode enabled:', this.chansonForm.value);
+    }
   }
 
   onPageChange(event: PageEvent) {
@@ -214,6 +213,8 @@ export class ChansonComponent implements OnInit {
 
       if (this.isEditMode && this.chansonId) {
         console.log('Mode édition - ID de la chanson:', this.chansonId);
+        console.log('FormData:', formData);
+
         // Mise à jour d'une chanson existante
         this.store.dispatch(
           updateChanson({ id: this.chansonId, chanson: formData })
@@ -221,7 +222,12 @@ export class ChansonComponent implements OnInit {
         Swal.fire({
           title: 'Chanson mise à jour avec succès',
           icon: 'success',
-          timer: 500,
+          showConfirmButton: true,
+          confirmButtonText: 'OK',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.router.navigate(['/dashboard/chansons/list']);
+          }
         });
       } else {
         // Création d'une nouvelle chanson
@@ -229,14 +235,20 @@ export class ChansonComponent implements OnInit {
         Swal.fire({
           title: 'Chanson ajoutée avec succès',
           icon: 'success',
-          timer: 500,
+          showConfirmButton: true,
+          confirmButtonText: 'OK',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.router.navigate(['/dashboard/chansons/list']);
+          }
         });
       }
 
       // Redirection après succès
-      setTimeout(() => {
+      /*  setTimeout(() => {
         this.router.navigate(['/dashboard/chansons/list']);
       }, 1000);
+      */
     }
   }
 
