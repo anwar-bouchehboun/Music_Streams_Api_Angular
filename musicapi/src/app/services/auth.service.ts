@@ -64,7 +64,10 @@ export class AuthService {
   }
 
   updateUser(user: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrlUsers}/admin/users/${user.id}`, user);
+    return this.http.put<any>(
+      `${this.apiUrlUsers}/admin/users/${user.id}`,
+      user
+    );
   }
 
   deleteUser(user: any): Observable<any> {
@@ -152,5 +155,17 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+
+  redirectBasedOnRole() {
+    const decodedToken = this.getDecodedToken();
+    if (decodedToken) {
+      const isAdmin = decodedToken.role.includes('ADMIN');
+      if (isAdmin) {
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.router.navigate(['/home']);
+      }
+    }
   }
 }

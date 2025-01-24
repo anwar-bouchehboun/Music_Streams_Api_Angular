@@ -29,7 +29,7 @@ export const appConfig: ApplicationConfig = {
       audio: audioReducer,
       albumListe: albumListeReducer,
     }),
-    provideEffects(AuthEffects, AlbumEffects, ChansonsEffects, AudioEffects, AlbumListeEffects  ),
+    provideEffects(AuthEffects, AlbumEffects, ChansonsEffects, AudioEffects, AlbumListeEffects),
     provideAnimations(),
     provideHttpClient(withInterceptors([AuthInterceptor])),
   ],

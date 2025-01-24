@@ -18,6 +18,7 @@
         <tr>
           <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Login</th>
           <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Rôles</th>
+          <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Compte</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
@@ -36,6 +37,14 @@
                 {{ role.rolename }}
               </span>
             </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span [ngClass]="{
+              'bg-green-100 text-green-800': user.active,
+              'bg-red-100 text-red-800': !user.active
+            }" class="px-2 py-1 text-sm font-medium rounded-full">
+              {{ user.active ? 'Actif' : 'Désactivé' }}
+            </span>
           </td>
         </tr>
       </tbody>

@@ -48,9 +48,6 @@ import Swal from 'sweetalert2';
         <mat-card-content>
           <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
             <!-- Message d'erreur -->
-            <div *ngIf="error$ | async as error" class="error-message">
-              {{ error }}
-            </div>
 
             <!-- Login -->
             <mat-form-field  class="full-width">

@@ -14,7 +14,7 @@ export class LoginGuard {
       const decodedToken = this.authService.getDecodedToken();
       if (decodedToken.role.includes('ADMIN')) {
         return this.router.navigate(['/dashboard']).then(() => false);
-      } else {
+      } else{
         return this.router.navigate(['/home']).then(() => false);
       }
     }

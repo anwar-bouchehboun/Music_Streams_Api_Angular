@@ -13,24 +13,23 @@ import Swal from 'sweetalert2';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
   template: `
-    <div
-      class="flex justify-center items-center p-4 min-h-screen bg-gradient-to-br from-blue-100 to-purple-100"
-    >
+    <div>
+      <div></div>
       <div
-        class="p-8 w-full max-w-md bg-white rounded-2xl shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105"
+        class="flex justify-center items-center p-4 min-h-screen bg-gradient-to-br from-blue-100 to-purple-100"
       >
-        <h1
-          class="mb-8 text-3xl font-normal text-center text-indigo-600 animate-fade-in"
+        <div
+          class="p-8 w-full max-w-md bg-white rounded-2xl shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105"
         >
-          Login
-        </h1>
-
-        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-6">
-          <div class="space-y-1 group">
-            <div class="relative">
+          <!-- Logo Musical -->
+          <div class="flex flex-col items-center mb-6">
+            <div class="relative mb-4 w-20 h-20">
+              <div
+                class="absolute inset-0 bg-indigo-600 rounded-full opacity-10 animate-pulse"
+              ></div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="absolute left-0 top-2 w-6 h-6 text-gray-400 transition-colors group-hover:text-indigo-500"
+                class="p-4 w-full h-full text-indigo-600"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -39,126 +38,200 @@ import Swal from 'sweetalert2';
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                  d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
                 />
               </svg>
-              <input
-                type="text"
-                formControlName="login"
-                placeholder="login"
-                class="py-2 pr-3 pl-8 w-full border-b-2 border-gray-300 transition-all duration-300 group-hover:border-indigo-500 focus:border-indigo-600 focus:outline-none"
-              />
             </div>
-            <div
-              *ngIf="
-                loginForm.get('login')?.touched &&
-                loginForm.get('login')?.errors
-              "
-              class="mt-1 text-sm text-red-500 animate-slide-up"
-            >
-              <span *ngIf="loginForm.get('login')?.errors?.['required']">
-                Le login est requis
-              </span>
-              <span *ngIf="loginForm.get('login')?.errors?.['minlength']">
-                Le login doit contenir au moins 3 caractères
-              </span>
-              <span *ngIf="loginForm.get('login')?.errors?.['loginNotExist']">
-                Le login n'existe pas
-              </span>
+            <div class="text-2xl font-bold tracking-wider text-indigo-600">
+              MusicApp
             </div>
           </div>
 
-          <div class="space-y-1 group">
-            <div class="relative">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="absolute left-0 top-2 w-6 h-6 text-gray-400 transition-colors group-hover:text-indigo-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
-              </svg>
-              <input
-                [type]="hidePassword ? 'password' : 'text'"
-                formControlName="password"
-                placeholder="Password"
-                class="py-2 pr-10 pl-8 w-full border-b-2 border-gray-300 transition-all duration-300 group-hover:border-indigo-500 focus:border-indigo-600 focus:outline-none"
-              />
-              <button
-                type="button"
-                (click)="hidePassword = !hidePassword"
-                class="absolute top-2 right-2 text-gray-500 transition-colors hover:text-indigo-600"
-              >
+          <h1
+            class="mb-8 text-3xl font-normal text-center text-indigo-600 animate-fade-in"
+          >
+            
+          </h1>
+
+          <form
+            [formGroup]="loginForm"
+            (ngSubmit)="onLogin()"
+            class="space-y-6"
+          >
+            <div class="space-y-1 group">
+              <div class="relative">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="w-6 h-6"
+                  class="absolute left-0 top-2 w-6 h-6 text-gray-400 transition-colors group-hover:text-indigo-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
                   <path
-                    *ngIf="hidePassword"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                  <path
-                    *ngIf="hidePassword"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                  />
-                  <path
-                    *ngIf="!hidePassword"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
                   />
                 </svg>
-              </button>
-            </div>
-            <div
-              *ngIf="
-                loginForm.get('password')?.touched &&
-                loginForm.get('password')?.errors
-              "
-              class="mt-1 text-sm text-red-500 animate-slide-up"
-            >
-              <span *ngIf="loginForm.get('password')?.errors?.['required']"
-                >Le mot de passe est requis</span
+                <input
+                  type="text"
+                  formControlName="login"
+                  placeholder="login"
+                  class="py-2 pr-3 pl-8 w-full border-b-2 border-gray-300 transition-all duration-300 group-hover:border-indigo-500 focus:border-indigo-600 focus:outline-none"
+                />
+              </div>
+              <div
+                *ngIf="
+                  loginForm.get('login')?.touched &&
+                  loginForm.get('login')?.errors
+                "
+                class="mt-1 text-sm text-red-500 animate-slide-up"
               >
-              <span *ngIf="loginForm.get('password')?.errors?.['minlength']">
-                Le mot de passe doit contenir au moins 6 caractères
-              </span>
+                <span *ngIf="loginForm.get('login')?.errors?.['required']">
+                  Le login est requis
+                </span>
+                <span *ngIf="loginForm.get('login')?.errors?.['minlength']">
+                  Le login doit contenir au moins 3 caractères
+                </span>
+                <span *ngIf="loginForm.get('login')?.errors?.['loginNotExist']">
+                  Le login n'existe pas
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div class="flex justify-end">
-            <button
-              type="submit"
-              [disabled]="loginForm.invalid"
-              class="px-6 py-2 text-white bg-indigo-600 rounded-lg transition-all duration-200 transform hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
-            >
-              Login
-            </button>
-          </div>
-        </form>
-        <div class="mt-4 text-center">
-          <a
-            [routerLink]="['/register']"
-            class="text-indigo-600 hover:text-indigo-700"
-          >
-            Créer un compte
-          </a>
+            <div class="space-y-1 group">
+              <div class="relative">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="absolute left-0 top-2 w-6 h-6 text-gray-400 transition-colors group-hover:text-indigo-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+                <input
+                  [type]="hidePassword ? 'password' : 'text'"
+                  formControlName="password"
+                  placeholder="Password"
+                  class="py-2 pr-10 pl-8 w-full border-b-2 border-gray-300 transition-all duration-300 group-hover:border-indigo-500 focus:border-indigo-600 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  (click)="hidePassword = !hidePassword"
+                  class="absolute top-2 right-2 text-gray-500 transition-colors hover:text-indigo-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      *ngIf="hidePassword"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      *ngIf="hidePassword"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                    <path
+                      *ngIf="!hidePassword"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div
+                *ngIf="
+                  loginForm.get('password')?.touched &&
+                  loginForm.get('password')?.errors
+                "
+                class="mt-1 text-sm text-red-500 animate-slide-up"
+              >
+                <span *ngIf="loginForm.get('password')?.errors?.['required']"
+                  >Le mot de passe est requis</span
+                >
+                <span *ngIf="loginForm.get('password')?.errors?.['minlength']">
+                  Le mot de passe doit contenir au moins 6 caractères
+                </span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-4 mt-6">
+              <button
+                type="submit"
+                [disabled]="loginForm.invalid"
+                class="inline-flex justify-center items-center px-6 py-2.5 w-full text-white bg-indigo-600 rounded-lg transition-all duration-200 transform hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="mr-2 w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                  />
+                </svg>
+                Login
+              </button>
+
+              <div class="relative">
+                <div class="flex absolute inset-0 items-center">
+                  <div class="w-full border-t border-gray-300"></div>
+                </div>
+                <div class="flex relative justify-center text-sm">
+                  <span class="px-2 text-gray-500 bg-white">ou</span>
+                </div>
+              </div>
+
+              <div
+                class="py-2 w-full text-center bg-indigo-600 rounded-lg transition-colors duration-200 hover:bg-indigo-700"
+              >
+                <a
+                  [routerLink]="['/register']"
+                  class="inline-flex gap-2 justify-center items-center py-1 text-white"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                    />
+                  </svg>
+                  Créer un compte
+                </a>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

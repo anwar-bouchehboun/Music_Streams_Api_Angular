@@ -27,14 +27,13 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(AuthActions.loginSuccess),
-        tap(({ user }) => {
+        tap((action) => {
           const decodedToken = this.authService.getDecodedToken();
-          if (decodedToken) {
-            if (decodedToken.role.includes('ADMIN')) {
-              this.router.navigate(['/dashboard']);
-            } else {
-              this.router.navigate(['/home']);
-            }
+          const isAdmin = decodedToken?.role.includes('ADMIN');
+          if (isAdmin) {
+            this.router.navigate(['/dashboard']);
+          } else {
+            this.router.navigate(['/home']);
           }
         })
       ),

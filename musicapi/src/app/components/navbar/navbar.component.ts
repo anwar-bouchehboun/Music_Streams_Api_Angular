@@ -29,6 +29,7 @@ import * as AuthActions from '../../store/actions/auth.actions';
               <ng-container *ngIf="isAuthenticated">
                 <!-- Liens communs -->
                 <!-- Liens User -->
+                <ng-container *ngIf="isUser">
                 <a
                   routerLink="/home"
                   routerLinkActive="bg-white/20 text-white"
@@ -50,7 +51,7 @@ import * as AuthActions from '../../store/actions/auth.actions';
                   </svg>
                   <span>Accueil</span>
                 </a>
-
+                </ng-container>
                 <!-- Liens Admin -->
                 <ng-container *ngIf="isAdmin">
                   <a
@@ -186,10 +187,12 @@ import * as AuthActions from '../../store/actions/auth.actions';
   `,
 })
 export class NavbarComponent implements OnInit {
+  
   isAuthenticated = false;
   isAdmin = false;
   username: string | null = null;
   isMobileMenuOpen = false;
+  isUser = false;
 
   constructor(
     private authService: AuthService,
@@ -207,6 +210,8 @@ export class NavbarComponent implements OnInit {
       this.isAuthenticated = true;
       this.username = token.sub;
       this.isAdmin = token.role.includes('ADMIN');
+      this.isUser = token.role.includes('USER');
+
     }
   }
 

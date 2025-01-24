@@ -24,6 +24,10 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
           console.error('❌ Erreur de requête:', error);
           console.log('🚫 Token invalide - Redirection vers login');
           localStorage.removeItem('token');
+          localStorage.removeItem('userRole');
+          localStorage.removeItem('expiresAt');
+          localStorage.removeItem('username');
+
           router.navigate(['/login']);
         },
       })
