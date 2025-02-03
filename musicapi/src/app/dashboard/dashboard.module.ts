@@ -9,6 +9,7 @@ import { ChansonComponent } from './chanson/chanson.component';
 import { ChansonListeComponent } from './chanson-liste/chanson-liste.component';
 import { UsersComponent } from './users/users.component';
 import { FormsModule } from '@angular/forms';
+import { AlbumResolver } from '../resolvers/album.resolver';
 
 const routes: Routes = [
   {
@@ -25,14 +26,23 @@ const routes: Routes = [
           {
             path: 'create',
             component: AlbumComponent,
+            resolve: {
+              albums: AlbumResolver,
+            },
           },
           {
             path: 'list',
             component: AlbumListeComponent,
+            resolve: {
+              albums: AlbumResolver,
+            },
           },
           {
             path: 'edit/:id',
             component: AlbumComponent,
+            resolve: {
+              albums: AlbumResolver,
+            },
           },
           {
             path: 'delete/:id',
@@ -64,7 +74,7 @@ const routes: Routes = [
       {
         path: 'users',
         component: UsersComponent,
-      },  
+      },
     ],
   },
 ];
